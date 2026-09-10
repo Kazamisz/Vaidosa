@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0610;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c026d3 0%, #9333ea 50%, #db2777 100%);
+  border-radius: 9999px;
+  border: 2px solid #0a0610;
+  box-shadow: 0 0 12px rgba(217, 70, 239, 0.55);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #d946ef 0%, #a855f7 50%, #f472b6 100%);
+  box-shadow: 0 0 18px rgba(217, 70, 239, 0.9);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #9333ea #0a0610;
+}
+
+/* Lenis smooth scroll standard support */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar for clean category filters */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hide all native system cursors completely and prevent text selection everywhere */
+*, *::before, *::after, html, body, input, textarea, select, button, a, [role="button"], [contenteditable], .cursor-pointer {
+  cursor: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
