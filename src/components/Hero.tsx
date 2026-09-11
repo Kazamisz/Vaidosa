@@ -17,7 +17,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
       {/* Full-bleed Background Image (Raw / No filters) */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <img
-          src="/images/background-hero.webp"
+          src="/images/background-hero-1280.webp"
+          srcSet="/images/background-hero-640.webp 640w, /images/background-hero-1280.webp 1280w, /images/background-hero.webp 1920w"
+          sizes="100vw"
           alt="Vaidosa Plus Size - Elegância e Moda"
           fetchPriority="high"
           loading="eager"
@@ -61,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             href={COMPANY.whatsapp_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto px-9 py-4 rounded-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 hover:from-fuchsia-500 hover:via-purple-500 hover:to-pink-500 text-white text-sm font-semibold tracking-wider uppercase transition-all duration-300 shadow-[0_0_25px_rgba(217,70,239,0.45)] hover:shadow-[0_0_35px_rgba(217,70,239,0.7)] hover:scale-105 cursor-pointer flex items-center justify-center space-x-2.5 border border-fuchsia-400/40"
+            className="w-full sm:w-auto px-9 py-4 rounded-full bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] text-white text-sm font-semibold tracking-wider uppercase transition-all duration-300 shadow-[0_0_25px_rgba(121,9,49,0.5)] hover:shadow-[0_0_35px_rgba(169,41,90,0.62)] hover:scale-105 cursor-pointer flex items-center justify-center space-x-2.5 border border-rose-200/30"
           >
             <PremiumWhatsAppIcon size={20} className="w-5 h-5" glow />
             <span>Atendimento no WhatsApp</span>

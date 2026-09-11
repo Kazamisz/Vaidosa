@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { getImageSrcSet } from '../utils/image';
 
 interface GLSLImageHoverProps {
   src: string;
@@ -41,6 +42,8 @@ export const GLSLImageHover: React.FC<GLSLImageHoverProps> = ({
       {/* High-res crisp photo with smooth scale & silk contrast on hover */}
       <img
         src={src}
+        srcSet={getImageSrcSet(src)}
+        sizes="(max-width: 459px) 100vw, (max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
         alt={alt}
         loading="lazy"
         decoding="async"

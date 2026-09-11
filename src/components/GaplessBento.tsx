@@ -1,7 +1,8 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
-import GhostFibers from './GhostFibers';
+import { getImageSrcSet, getImageUrl } from '../utils/image';
+import Ferrofluid from './backgrounds/Ferrofluid';
 
 interface GaplessBentoProps {
   products: Produto[];
@@ -14,27 +15,36 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
   onSelectProduct,
   onExploreCatalog,
 }) => {
+  if (!products.length) {
+    return <section id="bento" className="min-h-[1200px] bg-stone-950" aria-hidden="true" />;
+  }
+
   // Select high-impact items for the bento
   const heroItem = products.find(p => p.id === 'projeto_drbtklvdnxo') || products[0];
   const item2 = products.find(p => p.id === 'projeto_dcwy2surwqd') || products[1];
   const item3 = products.find(p => p.id === 'projeto_drbtoi9dmno') || products[2];
-  const item4 = products.find(p => p.id === 'projeto_dsw7a49gu1b') || products[3];
-  const item5 = products.find(p => p.id === 'projeto_dsurcstg4h3') || products[4];
-  const item6 = products.find(p => p.id === 'projeto_dtkuh7_j85r') || products[5];
-  const item7 = products.find(p => p.id === 'projeto_dxlcvikjeyf') || products[6];
+  const item4 = products.find(p => p.id === 'projeto_db8jnvwpvou') || products[3];
+  const item5 = products.find(p => p.id === 'projeto_duqcagtgkwi') || products[4];
+  const item6 = products.find(p => p.id === 'projeto_dygalcjjeim') || products[5];
+  const item7 = products.find(p => p.id === 'projeto_dsnkzh7ah7z') || products[6];
 
   const luminescentBorder = "bento-grid-item cursor-pointer";
 
   return (
     <section id="bento" className="py-28 md:py-40 bg-stone-950 relative overflow-hidden text-white">
-      {/* GhostFibers Background with Store Premium #790931 Palette */}
-      <GhostFibers
-        lineColor="#790931"
-        glowColor="#a21548"
-        speed={0.15}
-        scale={2.2}
-        brightness={1.8}
-        blueBoost={1.1}
+      <Ferrofluid
+        colors={['#4a0018', '#790931', '#b3124d', '#ef87aa']}
+        backgroundColor="#080307"
+        speed={0.075}
+        scale={1.9}
+        turbulence={0.85}
+        rimWidth={0.16}
+        sharpness={2.8}
+        shimmer={0.72}
+        glow={1.8}
+        flowDirection="up"
+        opacity={0.92}
+        mouseInteraction={false}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -51,7 +61,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             onClick={onExploreCatalog}
             className="self-start md:self-end px-7 py-3.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] border border-purple-400/40"
           >
-            Explorar Acervo Completo
+            Explorar Catálogo Completo
           </button>
         </div>
 
@@ -64,7 +74,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 lg:col-span-8 lg:row-span-2 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[460px] lg:min-h-[580px] cursor-pointer shadow-xl ${luminescentBorder}`}
           >
             <img
-              src={`/${heroItem.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(heroItem.imagens[0])}
+              srcSet={getImageSrcSet(heroItem.imagens[0])}
+              sizes="(max-width: 1023px) 100vw, 67vw"
               alt={heroItem.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top sm:object-center group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -86,10 +98,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
                 <p className="text-stone-300 text-sm mt-2 line-clamp-2">
                   {heroItem.descricao_curta}
                 </p>
-                <div className="mt-4 flex items-center space-x-3 text-xs font-medium text-fuchsia-200">
-                  <span>Tamanhos 46 ao 64</span>
-                  <span>•</span>
-                  <span>Consultar Loja</span>
+                <div className="mt-4 flex items-center text-xs font-medium text-fuchsia-200">
+                  <span>Ver composição e fotos</span>
                 </div>
               </div>
             </div>
@@ -102,7 +112,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item2.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item2.imagens[0])}
+              srcSet={getImageSrcSet(item2.imagens[0])}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item2.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -131,7 +143,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item3.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item3.imagens[0])}
+              srcSet={getImageSrcSet(item3.imagens[0])}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item3.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -160,7 +174,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item4.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item4.imagens[0])}
+              srcSet={getImageSrcSet(item4.imagens[0])}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item4.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -184,7 +200,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item5.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item5.imagens[0])}
+              srcSet={getImageSrcSet(item5.imagens[0])}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item5.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -208,7 +226,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
             className={`group col-span-12 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item6.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item6.imagens[0])}
+              srcSet={getImageSrcSet(item6.imagens[0])}
+              sizes="(max-width: 1023px) 100vw, 33vw"
               alt={item6.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
@@ -228,10 +248,13 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           {/* Bento Card 7 (Row 3 - Wide: 7 cols) */}
           <div
             onClick={() => onSelectProduct(item7)}
+            data-cursor="view"
             className={`group col-span-12 lg:col-span-7 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[360px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
-              src={`/${item7.imagens[0].replace(/^\/+/, '')}`}
+              src={getImageUrl(item7.imagens[0])}
+              srcSet={getImageSrcSet(item7.imagens[0])}
+              sizes="(max-width: 1023px) 100vw, 58vw"
               alt={item7.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"

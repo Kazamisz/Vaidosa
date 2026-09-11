@@ -1,145 +1,98 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
-
-interface AccordionItem {
-  id: string;
-  tag: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  category: string;
-}
-
-const ACCORDION_ITEMS: AccordionItem[] = [
-  {
-    id: 'projeto_drbtklvdnxo',
-    tag: 'Estúdio & Noite',
-    title: 'Macacão Royal',
-    subtitle: 'Decote transpassado com cinto dourado estruturado',
-    image: '/images/instagram/DRBTkLVDNXO/01.webp',
-    category: 'Macacões',
-  },
-  {
-    id: 'projeto_dcwy2surwqd',
-    tag: 'Coleção Sol',
-    title: 'Vestido Terracota',
-    subtitle: 'Fluidez em crepe nobre com padronagem contemporânea',
-    image: '/images/instagram/DcWY2suRWQD/01.webp',
-    category: 'Vestidos',
-  },
-  {
-    id: 'projeto_drbtoi9dmno',
-    tag: 'Alfaiataria Fina',
-    title: 'Conjunto Crepe',
-    subtitle: 'Blazer cropped estruturado e saia lápis com fenda',
-    image: '/images/instagram/DRBToI9DMno/01.webp',
-    category: 'Conjuntos',
-  },
-  {
-    id: 'projeto_dsw7a49gu1b',
-    tag: 'Casual Premium',
-    title: 'Chemise Poá',
-    subtitle: 'Modelagem ampla e versatilidade para o dia a dia',
-    image: '/images/instagram/DSW7a49gU1B/01.webp',
-    category: 'Camisas',
-  },
-];
+import { getImageUrl } from '../utils/image';
 
 interface HorizontalAccordionProps {
+  products: Produto[];
   onSelectProductById: (id: string) => void;
   onExploreCatalog: () => void;
 }
 
+const FEATURED_IDS = [
+  'projeto_drbtklvdnxo',
+  'projeto_dcwy2surwqd',
+  'projeto_drbtoi9dmno',
+  'projeto_dygalcjjeim',
+];
+
 export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
+  products,
   onSelectProductById,
   onExploreCatalog,
 }) => {
-  const [activeIdx, setActiveIdx] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const items = useMemo(
+    () => FEATURED_IDS.map(id => products.find(product => product.id === id)).filter((product): product is Produto => Boolean(product)),
+    [products],
+  );
+
+  if (!items.length) return null;
 
   return (
-    <section className="py-24 md:py-36 bg-[#161412] text-stone-100 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header with wide breathing room */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+    <section className="relative isolate overflow-hidden py-20 text-stone-100 sm:py-24 md:py-32">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.38),rgba(8,3,7,.78))]" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-6 text-left sm:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
-            <span className="text-xs font-semibold tracking-[0.3em] uppercase text-fuchsia-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]">
-              Exploração Tátil
+            <span className="text-xs font-semibold uppercase tracking-[0.28em] text-rose-300">
+              Exploração tátil
             </span>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight mt-3 text-white">
-              Cortes desenhados para a postura e presença
+            <h2 className="mt-3 text-3xl font-normal leading-[1.08] tracking-tight text-white sm:text-5xl">
+              Cortes desenhados para postura e presença
             </h2>
           </div>
           <button
+            type="button"
             onClick={onExploreCatalog}
-            className="self-start md:self-end px-6 py-3 rounded-full border border-stone-700 hover:border-white text-xs tracking-wider uppercase font-semibold text-stone-200 hover:text-white transition-colors cursor-pointer"
+            className="self-start rounded-full border border-white/20 bg-black/25 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-stone-100 backdrop-blur-md transition-colors hover:border-rose-300/70 hover:bg-rose-950/35 md:self-end"
           >
-            Ver Todo o Catálogo
+            Ver todo o catálogo
           </button>
         </div>
 
-        {/* Horizontal Accordion Track */}
-        <div className="flex flex-col lg:flex-row gap-4 h-[640px] w-full">
-          {ACCORDION_ITEMS.map((item, index) => {
-            const isActive = activeIdx === index;
-
+        <div className="grid w-full gap-3 lg:flex lg:h-[min(680px,72svh)] lg:min-h-[430px]">
+          {items.map((item, index) => {
+            const active = activeIndex === index;
             return (
-              <div
+              <button
+                type="button"
                 key={item.id}
-                onMouseEnter={() => setActiveIdx(index)}
                 onClick={() => onSelectProductById(item.id)}
-                className={`relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-stone-800/80 ${
-                  isActive ? 'lg:flex-[3.5] flex-grow' : 'lg:flex-1 h-32 lg:h-full'
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                data-cursor="view"
+                className={`group relative h-[270px] w-full overflow-hidden rounded-3xl border border-white/10 bg-stone-950 text-left shadow-[0_20px_60px_rgba(20,0,8,.26)] transition-[flex,transform,border-color] duration-700 ease-out sm:h-[330px] lg:h-full ${
+                  active ? 'lg:flex-[3.5] lg:border-rose-300/35' : 'lg:flex-1'
                 }`}
               >
-                {/* Background Image with zoom */}
                 <img
-                  src={item.image}
-                  alt={item.title}
-                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                  src={getImageUrl(item.imagens[0])}
+                  alt={item.titulo}
+                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
                   loading="lazy"
                 />
-
-                {/* Dark Vignette Overlay */}
-                <div
-                  className={`absolute inset-0 transition-opacity duration-500 ${
-                    isActive
-                      ? 'bg-gradient-to-t from-black/85 via-black/30 to-black/20'
-                      : 'bg-black/60 lg:bg-black/65 hover:bg-black/45'
-                  }`}
-                />
-
-                {/* Content Container */}
-                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
-                  {/* Top Bar */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-semibold tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-stone-200 border border-white/10">
-                      {item.tag}
+                <div className={`absolute inset-0 transition-colors duration-500 ${active ? 'bg-gradient-to-t from-black/90 via-black/30 to-black/15' : 'bg-black/45 lg:bg-black/60'}`} />
+                <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-7">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`max-w-[75%] rounded-full border border-white/15 bg-black/35 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-100 backdrop-blur-md transition-opacity duration-300 sm:text-[11px] ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
+                      {item.categoria}
                     </span>
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                        isActive ? 'bg-white text-stone-950' : 'bg-white/10 text-white'
-                      }`}
-                    >
-                      <ArrowUpRight className="w-5 h-5" />
-                    </div>
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-stone-950 transition-transform duration-300 group-hover:rotate-45">
+                      <ArrowUpRight className="h-5 w-5" />
+                    </span>
                   </div>
-
-                  {/* Bottom Text Block */}
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-normal text-white tracking-tight">
-                      {item.title}
+                  <div className={`max-w-xl transition-all duration-500 ${active ? 'translate-y-0 opacity-100' : 'translate-y-0 opacity-100 lg:translate-y-3 lg:opacity-0'}`}>
+                    <h3 className="text-2xl font-normal tracking-tight text-white sm:text-3xl lg:text-4xl">
+                      {item.titulo}
                     </h3>
-                    <p
-                      className={`text-sm text-stone-300 mt-2 max-w-md transition-all duration-500 ${
-                        isActive ? 'opacity-100 max-h-24' : 'opacity-0 max-h-0 overflow-hidden'
-                      }`}
-                    >
-                      {item.subtitle}
+                    <p className={`mt-2 line-clamp-2 text-sm leading-relaxed text-stone-200 transition-opacity duration-500 ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
+                      {item.descricao_curta}
                     </p>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

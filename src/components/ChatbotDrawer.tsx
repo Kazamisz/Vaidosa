@@ -111,14 +111,14 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <AnimatePresence>
-      <motion.div
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
         role="dialog"
         aria-modal="true"
         aria-label="Consultora Virtual Vaidosa Plus Size"
@@ -126,10 +126,10 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({
         onClick={onClose}
       >
         <motion.div
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+          initial={{ x: '100%', opacity: 0.88 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: '100%', opacity: 0.92 }}
+          transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-lg bg-stone-950 text-stone-100 h-full shadow-[_0_0_50px_rgba(0,0,0,0.8)] flex flex-col justify-between border-l border-stone-800 text-left relative overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
@@ -141,15 +141,14 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({
             <div className="flex items-center space-x-3.5">
               <div className="relative w-11 h-11 rounded-full p-[1px] bg-gradient-to-tr from-fuchsia-500 to-purple-400 shadow-[0_0_20px_rgba(217,70,239,0.35)]">
                 <img
-                  src="/images/icon-vaidosaAI-1.webp"
+              src="/images/icon-vaidosaAI-1-96.webp"
                   alt="Consultora IA"
                   className="w-full h-full object-cover rounded-full"
                 />
               </div>
               <div>
-                <div className="flex items-center space-x-2">
-                  <h3 className="font-serif text-lg font-medium text-white tracking-wide">Consultora Virtual</h3>
-                  <span className="px-2 py-0.5 text-[9px] uppercase tracking-widest bg-fuchsia-500/20 text-fuchsia-300 rounded-full border border-fuchsia-500/30">IA Elite</span>
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold tracking-tight text-white">Consultora Virtual</h3>
                 </div>
                 <p className="text-xs text-stone-400 font-light">Vaidosa Plus Size • Atendimento Curado</p>
               </div>
@@ -188,7 +187,7 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({
                   <div className={`flex items-start space-x-3 max-w-[90%] ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     {!isUser ? (
                       <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1 ring-1 ring-fuchsia-500/50">
-                        <img src="/images/icon-vaidosaAI-1.webp" alt="Bot" className="w-full h-full object-cover" />
+          <img src="/images/icon-vaidosaAI-1-96.webp" alt="Bot" className="w-full h-full object-cover" />
                       </div>
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-stone-800 text-stone-200 flex items-center justify-center shrink-0 mt-1 ring-1 ring-stone-700">
@@ -321,7 +320,8 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({
           </div>
 
         </motion.div>
-      </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

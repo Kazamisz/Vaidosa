@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ANIMATION_FPS } from '../utils/animation';
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.fps(ANIMATION_FPS);
 
 export const TextScrubSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +27,7 @@ export const TextScrubSection: React.FC = () => {
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 75%',
-            end: 'bottom 45%',
+            end: '65% 60%',
             scrub: 0.8,
           },
         }
@@ -47,9 +49,13 @@ export const TextScrubSection: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="py-32 md:py-48 bg-[#161412] text-stone-100 relative overflow-hidden"
+      className="relative overflow-hidden py-32 text-stone-100 md:py-48"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.78),rgba(8,3,7,.78))]"
+        aria-hidden="true"
+      />
+      <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
         {/* Massive Editorial Heading */}
         <h2 className="text-3xl sm:text-5xl lg:text-7xl font-normal tracking-tight text-white leading-[1.25] mb-12 sm:mb-16">
           Vestir a própria essência é um ato de elegância e poder.

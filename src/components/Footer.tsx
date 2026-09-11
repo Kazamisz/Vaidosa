@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Instagram, MapPin, Clock, Phone, Sparkles, ArrowUpRight } from 'lucide-react';
 import { COMPANY } from '../data/company';
 import { PremiumWhatsAppIcon } from './PremiumWhatsAppIcon';
+import { DeferredRender } from './DeferredRender';
+
+const DarkVeil = lazy(() => import('./backgrounds/DarkVeil'));
 
 interface FooterProps {
   onOpenChat: () => void;
@@ -17,9 +20,33 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
   };
 
   return (
-    <footer className="bg-stone-950 text-stone-300 text-left border-t border-stone-800">
+    <footer className="relative isolate overflow-hidden bg-[#080307] text-left text-stone-300 border-t border-rose-200/10">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_18%_12%,rgba(121,9,49,.72),transparent_38%),radial-gradient(ellipse_at_84%_44%,rgba(169,41,90,.38),transparent_34%),linear-gradient(145deg,#080307_5%,#260812_48%,#10050a_100%)]"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-35 bg-[linear-gradient(115deg,transparent_20%,rgba(246,202,217,.09)_48%,transparent_72%)]"
+        aria-hidden="true"
+      />
       {/* Massive High-Contrast Action CTA Chapter */}
-      <div className="py-28 md:py-40 border-b border-stone-800/80 relative overflow-hidden">
+      <div className="relative overflow-hidden border-b border-rose-200/10 bg-[#2B0210] py-28 md:py-40">
+        <DeferredRender className="pointer-events-none absolute inset-0 z-0" rootMargin="1200px 0px">
+          <div className="absolute inset-0" style={{ transform: 'scaleY(-1)' }} aria-hidden="true">
+            <Suspense fallback={null}>
+              <DarkVeil
+                hueShift={-55}
+                noiseIntensity={0.035}
+                scanlineIntensity={0.04}
+                scanlineFrequency={1.15}
+                speed={0.32}
+                warpAmount={0.16}
+                resolutionScale={0.8}
+              />
+              <div className="absolute inset-0 bg-[#2B0210] mix-blend-color" />
+            </Suspense>
+          </div>
+        </DeferredRender>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <span className="text-xs font-semibold tracking-[0.35em] uppercase text-fuchsia-300 mb-4 block drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]">
             Atendimento Direto &amp; Personalizado
@@ -32,36 +59,34 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
           </p>
 
           {/* Ultra High-Contrast Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+          <div className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-5 lg:flex-row">
             <a
               href={COMPANY.whatsapp_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-10 py-4.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 font-semibold text-xs tracking-widest uppercase transition-all shadow-2xl hover:scale-105 flex items-center justify-center space-x-2.5 cursor-pointer"
+              className="w-full px-10 py-4.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 font-semibold text-xs tracking-widest uppercase transition-all shadow-2xl hover:scale-105 flex items-center justify-center space-x-2.5 cursor-pointer lg:flex-1"
             >
               <PremiumWhatsAppIcon size={20} className="w-5 h-5" glow />
               <span>Chamar no WhatsApp</span>
             </a>
             <button
               onClick={onOpenChat}
-              className="w-full sm:w-auto px-10 py-4.5 rounded-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 hover:from-fuchsia-500 hover:via-purple-500 hover:to-pink-500 text-white font-semibold text-xs tracking-widest uppercase transition-all shadow-[0_0_30px_rgba(217,70,239,0.45)] hover:shadow-[0_0_40px_rgba(217,70,239,0.7)] hover:scale-105 flex items-center justify-center space-x-2.5 cursor-pointer border border-fuchsia-400/40"
+              className="w-full px-10 py-4.5 rounded-full bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] text-white font-semibold text-xs tracking-widest uppercase transition-all shadow-[0_0_26px_rgba(121,9,49,0.46)] hover:shadow-[0_0_34px_rgba(169,41,90,0.58)] hover:scale-105 flex items-center justify-center space-x-2.5 cursor-pointer border border-rose-200/30 lg:flex-1"
             >
               <img
-                src="/images/icon-vaidosaAI-1.webp"
+              src="/images/icon-vaidosaAI-1-96.webp"
                 alt="IA"
-                className="w-5 h-5 rounded-full object-cover ring-1 ring-white/60 shadow-[0_0_8px_rgba(217,70,239,0.8)]"
+                className="h-5 w-5 rounded-full object-cover ring-1 ring-white/60 shadow-[0_0_8px_rgba(169,41,90,0.62)]"
               />
               <span>Consultora com Inteligência Artificial</span>
             </button>
           </div>
         </div>
 
-        {/* Ambient radial blur with pink/purple soft luminescence */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[380px] bg-gradient-to-r from-purple-900/30 via-fuchsia-900/35 to-pink-900/25 blur-[130px] -z-10 pointer-events-none" />
       </div>
 
       {/* Clean Architectural Footer Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-stone-800/80">
           
           {/* Brand Info (5 cols) */}
@@ -73,11 +98,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
                 title="Voltar ao Início"
               >
                 {/* Luminous aura behind transparent logo */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-fuchsia-600/30 via-purple-600/25 to-pink-500/20 rounded-2xl blur-lg opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute -inset-2 bg-gradient-to-r from-[#790931]/20 via-[#a9295a]/18 to-[#d45a87]/14 rounded-2xl blur-md opacity-45 group-hover:opacity-65 transition-opacity duration-500 pointer-events-none" />
                 <img
-                  src="/images/logo.webp"
+                  src="/images/logo-256.webp"
                   alt={COMPANY.nome}
-                  className="h-9 sm:h-10 w-auto max-w-[195px] object-contain relative z-10 drop-shadow-[0_0_14px_rgba(217,70,239,0.6)] drop-shadow-[0_0_28px_rgba(168,85,247,0.35)] transition-transform duration-300 group-hover:scale-105"
+                  className="h-9 sm:h-10 w-auto max-w-[195px] object-contain relative z-10 drop-shadow-[0_0_8px_rgba(169,41,90,0.36)] drop-shadow-[0_0_16px_rgba(121,9,49,0.18)] transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
               </button>

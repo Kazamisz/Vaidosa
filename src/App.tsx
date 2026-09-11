@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { InfiniteMarquee } from './components/InfiniteMarquee';
@@ -9,18 +9,21 @@ import { CuratedLooks } from './components/CuratedLooks';
 import { CatalogSection } from './components/CatalogSection';
 import { StoreSection } from './components/StoreSection';
 import { Footer } from './components/Footer';
-import { ProductModal } from './components/ProductModal';
-import { ChatbotDrawer } from './components/ChatbotDrawer';
-import { FavoritesDrawer } from './components/FavoritesDrawer';
 import { PremiumWhatsAppIcon } from './components/PremiumWhatsAppIcon';
 import { PremiumCursor } from './components/PremiumCursor';
+import { DeferredRender } from './components/DeferredRender';
 import Lenis from 'lenis';
 import { Produto, CartItem } from './types';
-import productsData from './data/products.json';
 import { COMPANY } from './data/company';
+import { ANIMATION_FRAME_INTERVAL } from './utils/animation';
+
+const GhostFibers = lazy(() => import('./components/GhostFibers'));
+const ProductModal = lazy(() => import('./components/ProductModal').then(module => ({ default: module.ProductModal })));
+const ChatbotDrawer = lazy(() => import('./components/ChatbotDrawer').then(module => ({ default: module.ChatbotDrawer })));
+const FavoritesDrawer = lazy(() => import('./components/FavoritesDrawer').then(module => ({ default: module.FavoritesDrawer })));
 
 export default function App() {
-  const products: Produto[] = productsData as Produto[];
+  const [products, setProducts] = useState<Produto[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   
@@ -47,6 +50,27 @@ export default function App() {
 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hasOpenedChat, setHasOpenedChat] = useState(false);
+  const [hasOpenedCart, setHasOpenedCart] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    import('./data/products.json').then(module => {
+      if (active) setProducts(module.default as Produto[]);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const openChat = () => {
+    setHasOpenedChat(true);
+    setIsChatOpen(true);
+  };
+  const openCart = () => {
+    setHasOpenedCart(true);
+    setIsCartOpen(true);
+  };
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   // Sync cart with localStorage
@@ -86,8 +110,12 @@ export default function App() {
     });
 
     let rafId: number;
+    let lastFrameTime = 0;
     function raf(time: number) {
-      lenis.raf(time);
+      if (time - lastFrameTime >= ANIMATION_FRAME_INTERVAL) {
+        lastFrameTime = time;
+        lenis.raf(time);
+      }
       rafId = requestAnimationFrame(raf);
     }
     rafId = requestAnimationFrame(raf);
@@ -117,14 +145,13 @@ export default function App() {
     }
   };
 
-  const handleToggleCart = (id: string) => {
+  const handleAddToCart = (id: string) => {
     setCart(prev => {
       const exists = prev.find(item => item.id === id);
       if (exists) {
-        return prev.filter(item => item.id !== id);
-      } else {
-        return [...prev, { id, quantity: 1 }];
+        return prev.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item);
       }
+      return [...prev, { id, quantity: 1 }];
     });
   };
 
@@ -189,10 +216,10 @@ export default function App() {
 
       {/* Floating Glass Pill Navigation Bar */}
       <Header
-        onOpenChat={() => setIsChatOpen(true)}
+        onOpenChat={openChat}
         onSearchFocus={handleSearchFocus}
         cartCount={totalCartCount}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={openCart}
       />
 
       {/* Main Container with overflow-x-hidden to prevent horizontal scroll bugs */}
@@ -213,21 +240,36 @@ export default function App() {
           onExploreCatalog={handleExploreCatalog}
         />
 
-        {/* COMPONENT ARSENAL: Horizontal Accordions */}
-        <HorizontalAccordion
-          onSelectProductById={handleSelectProductById}
-          onExploreCatalog={handleExploreCatalog}
-        />
+        <div className="relative isolate overflow-hidden bg-[#080307]">
+          <DeferredRender className="absolute inset-0" rootMargin="1200px 0px">
+            <Suspense fallback={null}>
+              <GhostFibers
+                lineColor="#790931"
+                glowColor="#a21548"
+                speed={0.15}
+                scale={2.2}
+                brightness={1.8}
+                blueBoost={1.1}
+              />
+            </Suspense>
+          </DeferredRender>
 
-        {/* DESIRE: Scrubbing Text Reveal with Inline Typography Images */}
-        <TextScrubSection />
+          {/* COMPONENT ARSENAL: Horizontal Accordions */}
+          <HorizontalAccordion
+            products={products}
+            onSelectProductById={handleSelectProductById}
+            onExploreCatalog={handleExploreCatalog}
+          />
+
+          {/* DESIRE: Scrubbing Text Reveal with Inline Typography Images */}
+          <TextScrubSection />
+        </div>
 
         {/* DESIRE: Curated Looks with GSAP Scroll Image Scale & Fade */}
         <CuratedLooks
           products={products}
           onSelectProduct={handleSelectProduct}
-          cart={cart}
-          onToggleCart={handleToggleCart}
+          onAddToCart={handleAddToCart}
         />
 
         {/* FULL CATALOG SECTION: Dense Vitrine with Search & Filters */}
@@ -236,8 +278,7 @@ export default function App() {
           selectedCategory={selectedCategory}
           onSelectCategory={handleCategorySelect}
           onSelectProduct={handleSelectProduct}
-          cart={cart}
-          onToggleCart={handleToggleCart}
+          onAddToCart={handleAddToCart}
           searchInputRef={searchInputRef}
         />
 
@@ -247,65 +288,72 @@ export default function App() {
 
       {/* ACTION: High-Contrast CTA Chapter and Clean Architectural Footer */}
       <Footer
-        onOpenChat={() => setIsChatOpen(true)}
+        onOpenChat={openChat}
         onSelectCategory={handleCategorySelect}
       />
 
       {/* Product Details Modal with Gallery */}
-      <ProductModal
-        product={selectedProduct}
-        onClose={handleCloseModal}
-        isInCart={selectedProduct ? cart.some(item => item.id === selectedProduct.id) : false}
-        onToggleCart={handleToggleCart}
-      />
+      {selectedProduct && (
+        <Suspense fallback={null}>
+          <ProductModal product={selectedProduct} onClose={handleCloseModal} onAddToCart={handleAddToCart} />
+        </Suspense>
+      )}
 
       {/* AI Fashion Consultant Drawer */}
-      <ChatbotDrawer
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        products={products}
-        onSelectProduct={handleSelectProduct}
-      />
+      {hasOpenedChat && (
+        <Suspense fallback={null}>
+          <ChatbotDrawer
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            products={products}
+            onSelectProduct={handleSelectProduct}
+          />
+        </Suspense>
+      )}
 
       {/* Shopping Cart Drawer */}
-      <FavoritesDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        products={products}
-        onSelectProduct={handleSelectProduct}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveFromCart}
-        onClearCart={handleClearCart}
-      />
+      {hasOpenedCart && (
+        <Suspense fallback={null}>
+          <FavoritesDrawer
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            cart={cart}
+            products={products}
+            onSelectProduct={handleSelectProduct}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveFromCart={handleRemoveFromCart}
+            onClearCart={handleClearCart}
+          />
+        </Suspense>
+      )}
 
       {/* Floating Action Buttons Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3.5">
+      <div className="fixed bottom-3 right-3 z-40 flex items-center gap-2 sm:bottom-6 sm:right-6 sm:gap-3.5">
         {/* WhatsApp Direct Floating Trigger (Left) - Very subtle, discreet pulse */}
         <a
           href={COMPANY.whatsapp_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-[0_4px_18px_rgba(37,211,102,0.3)] hover:shadow-[0_6px_24px_rgba(37,211,102,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+          className="group relative flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_4px_18px_rgba(37,211,102,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] hover:shadow-[0_6px_24px_rgba(37,211,102,0.45)] active:scale-95 sm:h-14 sm:w-14"
           title="Falar no WhatsApp da Loja"
           aria-label="Falar no WhatsApp da Loja"
         >
           {/* Considerably reduced, soft ambient pulse */}
           <span className="absolute inset-0 rounded-full bg-emerald-400/10 animate-pulse [animation-duration:5s] pointer-events-none" />
-          <PremiumWhatsAppIcon size={28} className="w-7 h-7 relative z-10 text-white" glow={false} />
+          <PremiumWhatsAppIcon size={28} className="relative z-10 h-6 w-6 text-white sm:h-7 sm:w-7" glow={false} />
         </a>
 
         {/* AI Consultant Floating Trigger (Right) - Sized to visually match WhatsApp circle */}
         <button
-          onClick={() => setIsChatOpen(true)}
-          className="group relative flex items-center justify-center w-16 h-16 rounded-full transition-transform duration-300 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none"
+          onClick={openChat}
+          className="group relative flex h-12 w-12 items-center justify-center rounded-full transition-transform duration-300 hover:scale-105 active:scale-95 focus:outline-none sm:h-16 sm:w-16"
           title="Abrir Consultora Virtual IA"
           aria-label="Abrir Consultora Virtual IA"
         >
           {/* Ambient Luminescence Glow Aura */}
           <div className="absolute inset-0 rounded-full bg-fuchsia-600/35 blur-md group-hover:bg-fuchsia-500/55 group-hover:blur-lg transition-all duration-300 pointer-events-none" />
           <img
-            src="/images/icon-vaidosaAI-1.webp"
+            src="/images/icon-vaidosaAI-1-96.webp"
             alt="Consultora IA"
             className="w-full h-full scale-110 rounded-full object-contain relative z-10 drop-shadow-[0_0_12px_rgba(217,70,239,0.7)] group-hover:drop-shadow-[0_0_20px_rgba(217,70,239,0.95)] transition-all duration-300"
           />

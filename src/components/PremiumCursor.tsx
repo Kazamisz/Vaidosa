@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { ANIMATION_FRAME_INTERVAL } from '../utils/animation';
 
 type CursorVariant = 'default' | 'pointer' | 'text' | 'view';
 
@@ -86,11 +87,15 @@ export const PremiumCursor: React.FC = () => {
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
-    // 120fps physics loop with lerp easing
+    // Shared 24fps motion budget with lerp easing.
     let rafId: number;
+    let lastRenderTime = 0;
     const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
 
-    const tick = () => {
+    const tick = (time: number) => {
+      rafId = requestAnimationFrame(tick);
+      if (time - lastRenderTime < ANIMATION_FRAME_INTERVAL) return;
+      lastRenderTime = time;
       followerPos.current.x = lerp(followerPos.current.x, pos.current.x, 0.22);
       followerPos.current.y = lerp(followerPos.current.y, pos.current.y, 0.22);
 
@@ -102,7 +107,6 @@ export const PremiumCursor: React.FC = () => {
         followerRef.current.style.transform = `translate3d(${followerPos.current.x}px, ${followerPos.current.y}px, 0) translate(-50%, -50%)`;
       }
 
-      rafId = requestAnimationFrame(tick);
     };
 
     rafId = requestAnimationFrame(tick);

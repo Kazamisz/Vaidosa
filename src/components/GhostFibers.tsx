@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 import './GhostFibers.css';
+import { ANIMATION_FPS } from '../utils/animation';
 
 const hexToRgb = hex => {
   const value = hex.trim().replace(/^#/, '');
@@ -238,7 +239,7 @@ const GhostFibers = ({
     let elapsed = 0;
     let previousTime = performance.now();
     let lastRenderTime = 0;
-    let frameRate = 60;
+    let frameRate = ANIMATION_FPS;
     let isPaused = false;
     let isVisible = true;
     let isPageVisible = !document.hidden;

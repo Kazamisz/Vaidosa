@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Menu, X, Search, ShoppingBag } from 'lucide-react';
+import { ArrowUpRight, Menu, X, Search, ShoppingBag } from 'lucide-react';
 import { COMPANY } from '../data/company';
-import { PremiumWhatsAppIcon } from './PremiumWhatsAppIcon';
 
 interface HeaderProps {
   onOpenChat: () => void;
@@ -40,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Ambient subtle pink/purple luminous backlight */}
             <div className="absolute -inset-2 bg-gradient-to-r from-fuchsia-600/20 via-purple-600/15 to-pink-500/15 rounded-full blur-sm opacity-40 group-hover:opacity-70 group-hover:blur-md transition-all duration-500 pointer-events-none" />
             <img
-              src="/images/logo.webp"
+              src="/images/logo-256.webp"
               alt={COMPANY.nome}
               className="h-8 sm:h-9 w-auto max-w-[155px] sm:max-w-[185px] object-contain relative z-10 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_8px_rgba(217,70,239,0.35)] drop-shadow-[0_0_16px_rgba(168,85,247,0.2)]"
               loading="eager"
@@ -114,17 +113,15 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          {/* WhatsApp Direct CTA with Premium Icon */}
-          <a
-            href={COMPANY.whatsapp_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 sm:px-3.5 py-1.5 rounded-full bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-semibold tracking-wider transition-all shadow-[0_0_16px_rgba(16,185,129,0.35)] hover:shadow-[0_0_24px_rgba(16,185,129,0.6)] hover:scale-105 flex items-center space-x-1.5 border border-emerald-400/40"
-            title="Conversar no WhatsApp"
+          <button
+            type="button"
+            onClick={() => scrollTo('catalogo')}
+            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full border border-rose-200/30 bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_rgba(121,9,49,.48)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] hover:shadow-[0_12px_32px_rgba(121,9,49,.54)] sm:px-5 sm:text-xs"
+            title="Abrir catálogo"
           >
-            <PremiumWhatsAppIcon size={16} className="w-4 h-4" />
-            <span className="hidden sm:inline">WhatsApp</span>
-          </a>
+            <span>Catálogo</span>
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
 
           {/* Mobile Hamburger Toggle */}
           <button
@@ -180,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="flex items-center space-x-2 text-xs uppercase tracking-wider text-fuchsia-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
               >
                 <img
-                  src="/images/icon-vaidosaAI-1.webp"
+              src="/images/icon-vaidosaAI-1-96.webp"
                   alt="Consultora IA"
                   className="w-5 h-5 rounded-full object-cover drop-shadow-[0_0_6px_rgba(217,70,239,0.7)]"
                 />
