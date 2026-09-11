@@ -67,16 +67,20 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
           {/* Brand Info (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="space-y-3">
-              <div className="relative inline-block group">
+              <button
+                onClick={() => scrollTo('inicio')}
+                className="relative inline-block group text-left cursor-pointer bg-transparent border-0 p-0"
+                title="Voltar ao Início"
+              >
                 {/* Luminous aura behind transparent logo */}
                 <div className="absolute -inset-2 bg-gradient-to-r from-fuchsia-600/30 via-purple-600/25 to-pink-500/20 rounded-2xl blur-lg opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <img
                   src="/images/logo.webp"
                   alt={COMPANY.nome}
-                  className="h-9 sm:h-10 w-auto max-w-[195px] object-contain relative z-10 drop-shadow-[0_0_14px_rgba(217,70,239,0.6)] drop-shadow-[0_0_28px_rgba(168,85,247,0.35)]"
+                  className="h-9 sm:h-10 w-auto max-w-[195px] object-contain relative z-10 drop-shadow-[0_0_14px_rgba(217,70,239,0.6)] drop-shadow-[0_0_28px_rgba(168,85,247,0.35)] transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
-              </div>
+              </button>
               <p className="text-xs font-semibold text-fuchsia-300 tracking-[0.25em] uppercase drop-shadow-[0_0_8px_rgba(217,70,239,0.35)]">
                 Moda Plus Size • Birigui - SP
               </p>

@@ -31,7 +31,11 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Floating Glass Pill Navigation Bar */}
       <div className="bg-stone-950/85 backdrop-blur-xl border border-stone-800/90 shadow-2xl rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between">
         {/* Brand Logo with Luminescent Soft Glow */}
-        <a href="#" className="flex items-center space-x-2 group relative py-0.5">
+        <button
+          onClick={() => scrollTo('inicio')}
+          className="flex items-center space-x-2 group relative py-0.5 text-left cursor-pointer bg-transparent border-0 p-0"
+          title="Ir para o Início"
+        >
           <div className="relative flex items-center">
             {/* Ambient subtle pink/purple luminous backlight */}
             <div className="absolute -inset-2 bg-gradient-to-r from-fuchsia-600/20 via-purple-600/15 to-pink-500/15 rounded-full blur-sm opacity-40 group-hover:opacity-70 group-hover:blur-md transition-all duration-500 pointer-events-none" />
@@ -42,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
               loading="eager"
             />
           </div>
-        </a>
+        </button>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-7 text-xs font-medium uppercase tracking-widest text-white">

@@ -6,31 +6,36 @@ import {defineConfig, Plugin} from 'vite';
 import {handleChatMessage} from './src/server/chatHandler';
 
 function chatApiPlugin(): Plugin {
+  const handler = async (req: any, res: any, next: any) => {
+    if (req.url === '/api/chat' && req.method === 'POST') {
+      let body = '';
+      req.on('data', (chunk: any) => {
+        body += chunk;
+      });
+      req.on('end', async () => {
+        try {
+          const parsed = JSON.parse(body || '{}');
+          const result = await handleChatMessage(parsed.message || '');
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(result));
+        } catch (err: any) {
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: err?.message || 'Server error' }));
+        }
+      });
+      return;
+    }
+    next();
+  };
+
   return {
     name: 'vite-plugin-chat-api',
     configureServer(server) {
-      server.middlewares.use(async (req, res, next) => {
-        if (req.url === '/api/chat' && req.method === 'POST') {
-          let body = '';
-          req.on('data', chunk => {
-            body += chunk;
-          });
-          req.on('end', async () => {
-            try {
-              const parsed = JSON.parse(body || '{}');
-              const result = await handleChatMessage(parsed.message || '');
-              res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify(result));
-            } catch (err: any) {
-              res.statusCode = 500;
-              res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ error: err?.message || 'Server error' }));
-            }
-          });
-          return;
-        }
-        next();
-      });
+      server.middlewares.use(handler);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(handler);
     }
   };
 }
@@ -104,11 +109,19 @@ export default defineConfig(() => {
       },
     },
     server: {
+      host: '0.0.0.0',
+      port: 3000,
+      allowedHosts: true as const,
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
+    },
+    preview: {
+      host: '0.0.0.0',
+      port: 3000,
+      allowedHosts: true as const,
     },
   };
 });

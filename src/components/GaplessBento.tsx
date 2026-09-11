@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
+import GhostFibers from './GhostFibers';
 
 interface GaplessBentoProps {
   products: Produto[];
@@ -22,22 +23,33 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
   const item6 = products.find(p => p.id === 'projeto_dtkuh7_j85r') || products[5];
   const item7 = products.find(p => p.id === 'projeto_dxlcvikjeyf') || products[6];
 
+  const luminescentBorder = "bento-grid-item cursor-pointer";
+
   return (
-    <section id="bento" className="py-28 md:py-40 bg-[#FAF8F5]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="bento" className="py-28 md:py-40 bg-stone-950 relative overflow-hidden text-white">
+      {/* GhostFibers Background with Store Premium #790931 Palette */}
+      <GhostFibers
+        lineColor="#790931"
+        glowColor="#a21548"
+        speed={0.15}
+        scale={2.2}
+        brightness={1.8}
+        blueBoost={1.1}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-20 gap-6">
           <div className="max-w-3xl">
-            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-fuchsia-700">
+            <span className="text-xs font-semibold tracking-[0.25em] uppercase text-purple-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
               Arquitetura de Formas &amp; Caimento
             </span>
-            <h2 className="text-3xl sm:text-5xl font-normal tracking-tight text-stone-900 mt-3 leading-[1.1]">
+            <h2 className="text-3xl sm:text-5xl font-normal tracking-tight text-white mt-3 leading-[1.1]">
               Equilíbrio entre proporção, tecido fluido e linhas contemporâneas
             </h2>
           </div>
           <button
             onClick={onExploreCatalog}
-            className="self-start md:self-end px-7 py-3.5 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer shadow-md hover:shadow-lg hover:border-fuchsia-500/30"
+            className="self-start md:self-end px-7 py-3.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] border border-purple-400/40"
           >
             Explorar Acervo Completo
           </button>
@@ -49,7 +61,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(heroItem)}
             data-cursor="view"
-            className="group col-span-12 lg:col-span-8 lg:row-span-2 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[460px] lg:min-h-[580px] cursor-pointer shadow-xl border border-stone-200/80"
+            className={`group col-span-12 lg:col-span-8 lg:row-span-2 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[460px] lg:min-h-[580px] cursor-pointer shadow-xl ${luminescentBorder}`}
           >
             <img
               src={`/${heroItem.imagens[0].replace(/^\/+/, '')}`}
@@ -87,7 +99,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(item2)}
             data-cursor="view"
-            className="group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item2.imagens[0].replace(/^\/+/, '')}`}
@@ -116,7 +128,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(item3)}
             data-cursor="view"
-            className="group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[280px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item3.imagens[0].replace(/^\/+/, '')}`}
@@ -145,7 +157,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(item4)}
             data-cursor="view"
-            className="group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item4.imagens[0].replace(/^\/+/, '')}`}
@@ -169,7 +181,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(item5)}
             data-cursor="view"
-            className="group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 sm:col-span-6 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item5.imagens[0].replace(/^\/+/, '')}`}
@@ -193,7 +205,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           <div
             onClick={() => onSelectProduct(item6)}
             data-cursor="view"
-            className="group col-span-12 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 lg:col-span-4 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[340px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item6.imagens[0].replace(/^\/+/, '')}`}
@@ -216,7 +228,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           {/* Bento Card 7 (Row 3 - Wide: 7 cols) */}
           <div
             onClick={() => onSelectProduct(item7)}
-            className="group col-span-12 lg:col-span-7 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[360px] cursor-pointer shadow-lg border border-stone-200/80"
+            className={`group col-span-12 lg:col-span-7 relative rounded-3xl overflow-hidden bg-stone-900 text-white min-h-[360px] cursor-pointer shadow-lg ${luminescentBorder}`}
           >
             <img
               src={`/${item7.imagens[0].replace(/^\/+/, '')}`}
@@ -242,16 +254,16 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           </div>
 
           {/* Bento Card 8 (Row 3 - Editorial Narrative Block: 5 cols) */}
-          <div className="col-span-12 lg:col-span-5 rounded-3xl bg-[#1E1B18] text-white p-8 sm:p-10 flex flex-col justify-between border border-stone-800 shadow-lg">
+          <div className={`col-span-12 lg:col-span-5 rounded-3xl bg-[#1E1B18] text-white p-8 sm:p-10 flex flex-col justify-between shadow-lg ${luminescentBorder}`}>
             <div>
-              <span className="text-xs font-semibold tracking-[0.25em] uppercase text-fuchsia-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.4)]">
+              <span className="text-xs font-semibold tracking-[0.25em] uppercase text-purple-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
                 Manifesto da Marca
               </span>
               <h4 className="text-2xl sm:text-3xl font-normal text-white tracking-tight mt-3 leading-snug">
                 Moda feita para vestir sua autenticidade, com tecidos de toque macio e corte preciso.
               </h4>
             </div>
-            <div className="pt-8 border-t border-stone-800 flex items-center justify-between">
+            <div className="pt-8 border-t border-purple-500/30 flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-widest text-stone-400">Atendimento em Birigui</p>
                 <p className="text-sm font-semibold text-white mt-0.5">Av. Cidade Jardim, 1100</p>
