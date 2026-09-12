@@ -12,6 +12,7 @@ import { Footer } from './components/Footer';
 import { PremiumWhatsAppIcon } from './components/PremiumWhatsAppIcon';
 import { PremiumCursor } from './components/PremiumCursor';
 import { DeferredRender } from './components/DeferredRender';
+import { FpsMonitor } from './components/FpsMonitor';
 import Lenis from 'lenis';
 import { Produto, CartItem } from './types';
 import { COMPANY } from './data/company';
@@ -110,12 +111,8 @@ export default function App() {
     });
 
     let rafId: number;
-    let lastFrameTime = 0;
     function raf(time: number) {
-      if (time - lastFrameTime >= ANIMATION_FRAME_INTERVAL) {
-        lastFrameTime = time;
-        lenis.raf(time);
-      }
+      lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
     rafId = requestAnimationFrame(raf);
@@ -241,7 +238,7 @@ export default function App() {
         />
 
         <div className="relative isolate overflow-hidden bg-[#080307]">
-          <DeferredRender className="absolute inset-0" rootMargin="1200px 0px">
+          <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
             <Suspense fallback={null}>
               <GhostFibers
                 lineColor="#790931"
@@ -359,6 +356,9 @@ export default function App() {
           />
         </button>
       </div>
+
+      {/* Real-Time WebGL & Frametime Performance Benchmark HUD */}
+      <FpsMonitor />
     </div>
   );
 }

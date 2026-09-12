@@ -35,7 +35,8 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 
   const categories = useMemo(() => {
     const values = new Set<string>();
-    products.forEach(product => {
+    const safeProducts = Array.isArray(products) ? products : [];
+    safeProducts.forEach(product => {
       if (product?.categoria && product.categoria !== 'Ambiente Comercial') values.add(product.categoria);
     });
     return ['Todos', ...Array.from(values).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
@@ -43,7 +44,8 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 
   const filteredProducts = useMemo(() => {
     const term = normalize(searchTerm);
-    return products.filter(product => {
+    const safeProducts = Array.isArray(products) ? products : [];
+    return safeProducts.filter(product => {
       if (!product) return false;
       if (effectiveCategory !== 'Todos' && product.categoria !== effectiveCategory) return false;
       if (!term) return true;
@@ -67,7 +69,7 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 
   return (
     <section id="catalogo" className="relative isolate overflow-hidden bg-[#080307] py-20 text-white sm:py-24 md:py-32">
-      <DeferredRender className="absolute inset-0" rootMargin="1200px 0px">
+      <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
         <Suspense fallback={null}>
           <Silk
             speed={5}
@@ -91,36 +93,46 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
           </p>
         </div>
 
-        <div className="mb-8 space-y-4 rounded-3xl border border-white/10 bg-black/35 p-3 backdrop-blur-xl sm:p-5">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
-            <input
-              ref={searchInputRef}
-              type="search"
-              value={searchTerm}
-              onChange={event => {
-                setSearchTerm(event.target.value);
-                setVisibleCount(16);
-              }}
-              placeholder="Buscar por peça, cor, tecido ou estilo"
-              className="w-full rounded-2xl border border-white/12 bg-white/95 py-3 pl-10 pr-10 text-sm text-stone-900 outline-none placeholder:text-stone-500 focus:border-rose-400 focus:ring-2 focus:ring-rose-400/35"
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 hover:text-stone-800"
-                aria-label="Limpar busca"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+        <div className="relative mb-8 overflow-hidden rounded-3xl border border-white/12 bg-black/40 p-3.5 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-6">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none" />
+          
+          {/* Search Input Bar */}
+          <div className="relative group">
+            <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-rose-500/40 via-pink-500/20 to-rose-600/40 opacity-35 blur transition duration-500 group-hover:opacity-75" />
+            <div className="relative flex items-center">
+              <Search className="absolute left-4 h-4 w-4 text-rose-300 transition-colors group-hover:text-rose-200" />
+              <input
+                ref={searchInputRef}
+                type="search"
+                value={searchTerm}
+                onChange={event => {
+                  setSearchTerm(event.target.value);
+                  setVisibleCount(16);
+                }}
+                placeholder="Buscar por peça, cor, tecido ou estilo..."
+                className="w-full rounded-2xl border border-white/12 bg-black/45 py-3.5 pl-11 pr-11 text-sm text-white shadow-inner outline-none placeholder:text-stone-400 backdrop-blur-md transition-all duration-300 focus:border-rose-400/80 focus:bg-black/70 focus:ring-2 focus:ring-rose-500/25"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-stone-300 transition-colors hover:bg-white/20 hover:text-white"
+                  aria-label="Limpar busca"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="flex min-w-0 items-start gap-2">
-            <Filter className="mt-2 h-4 w-4 shrink-0 text-rose-300" />
-            <div data-lenis-prevent className="min-w-0 flex-1 overflow-x-auto overscroll-x-contain pb-1 scrollbar-none">
-              <div className="grid w-max grid-flow-col grid-rows-2 gap-1.5 sm:flex sm:w-auto sm:flex-wrap xl:flex-nowrap">
+          {/* Filter Pills with generous spacing & premium styling */}
+          <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-white/10 flex min-w-0 items-center gap-2.5">
+            <div className="flex items-center gap-1.5 shrink-0 text-rose-300/90 text-xs font-semibold uppercase tracking-wider pl-0.5">
+              <Filter className="h-3.5 w-3.5 text-rose-300" />
+              <span className="hidden sm:inline text-[11px] text-stone-400">Filtrar:</span>
+            </div>
+            <div data-lenis-prevent className="min-w-0 flex-1 overflow-x-auto overscroll-x-contain py-1 scrollbar-none">
+              <div className="grid w-max grid-flow-col grid-rows-2 gap-2 sm:flex sm:w-auto sm:flex-wrap xl:flex-nowrap">
                 {categories.map(category => {
                   const active = effectiveCategory === category;
                   return (
@@ -131,10 +143,10 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
                         onSelectCategory(category);
                         setVisibleCount(16);
                       }}
-                      className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-300 transform-gpu active:scale-95 ${
                         active
-                          ? 'border-rose-300/70 bg-[#790931] text-white'
-                          : 'border-white/12 bg-white/8 text-stone-200 hover:border-rose-300/45 hover:bg-white/12'
+                          ? 'border-rose-400/80 bg-gradient-to-r from-[#880b37] to-[#550622] text-white shadow-md shadow-rose-950/50 ring-1 ring-rose-400/30'
+                          : 'border-white/10 bg-white/[0.06] text-stone-300 hover:border-rose-300/40 hover:bg-white/[0.12] hover:text-white backdrop-blur-md'
                       }`}
                     >
                       {category}

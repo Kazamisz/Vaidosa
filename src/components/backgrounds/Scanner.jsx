@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './Scanner.css';
-import { ANIMATION_FRAME_INTERVAL, getWebGLDpr } from '../../utils/animation';
+import { ANIMATION_FRAME_INTERVAL, getWebGLDpr, webGLTracker } from '../../utils/animation';
 
 const hexToRgb = hex => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -173,72 +173,106 @@ const Scanner = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      dpr: getWebGLDpr()
-    });
+    let renderer = null;
+    let gl = null;
+    let program = null;
+    let mesh = null;
 
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    const canvas = gl.canvas;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
-    container.appendChild(canvas);
+    try {
+      renderer = new Renderer({
+        webgl: 2,
+        alpha: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+        antialias: false,
+        dpr: getWebGLDpr()
+      });
 
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        iTime: { value: 0 },
-        iResolution: { value: new Float32Array([1, 1]) },
-        uSpeed: { value: 0.5 },
-        uSweepSpeed: { value: 0.25 },
-        uSweepWidth: { value: 1.6 },
-        uSweepFalloff: { value: 6 },
-        uScale: { value: 1.5 },
-        uFrequency: { value: 2 },
-        uRipple: { value: 0.22 },
-        uBandDensity: { value: 11 },
-        uLineSharpness: { value: 5.5 },
-        uGlow: { value: 0.22 },
-        uColorSpread: { value: 0.7 },
-        uBrightness: { value: 1.0 },
-        uContrast: { value: 1.15 },
-        uSoftness: { value: 1.4 },
-        uVignette: { value: 0.45 },
-        uOpacity: { value: 1.0 },
-        uScanline: { value: 1.0 },
-        uGrain: { value: 1.0 },
-        uGrainIntensity: { value: 0.05 },
-        uDirection: { value: 0.0 },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-        uMouseEnabled: { value: 1.0 },
-        uMouseRadius: { value: 0.5 },
-        uMouseStrength: { value: 0.5 },
-        uMouseActive: { value: 0.0 },
-        uColor1: { value: new Float32Array([1, 1, 1]) },
-        uColor2: { value: new Float32Array([1, 1, 1]) },
-        uColor3: { value: new Float32Array([1, 1, 1]) }
+      gl = renderer.gl;
+      if (!gl) return;
+      gl.clearColor(0, 0, 0, 0);
+      const canvas = gl.canvas;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.display = 'block';
+
+      const handleContextLost = (e) => {
+        e.preventDefault();
+      };
+      canvas.addEventListener('webglcontextlost', handleContextLost, false);
+
+      container.appendChild(canvas);
+
+      const geometry = new Triangle(gl);
+      program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: { value: new Float32Array([1, 1]) },
+          uSpeed: { value: 0.5 },
+          uSweepSpeed: { value: 0.25 },
+          uSweepWidth: { value: 1.6 },
+          uSweepFalloff: { value: 6 },
+          uScale: { value: 1.5 },
+          uFrequency: { value: 2 },
+          uRipple: { value: 0.22 },
+          uBandDensity: { value: 11 },
+          uLineSharpness: { value: 5.5 },
+          uGlow: { value: 0.22 },
+          uColorSpread: { value: 0.7 },
+          uBrightness: { value: 1.0 },
+          uContrast: { value: 1.15 },
+          uSoftness: { value: 1.4 },
+          uVignette: { value: 0.45 },
+          uOpacity: { value: 1.0 },
+          uScanline: { value: 1.0 },
+          uGrain: { value: 1.0 },
+          uGrainIntensity: { value: 0.05 },
+          uDirection: { value: 0.0 },
+          uMouse: { value: new Float32Array([0.5, 0.5]) },
+          uMouseEnabled: { value: 1.0 },
+          uMouseRadius: { value: 0.5 },
+          uMouseStrength: { value: 0.5 },
+          uMouseActive: { value: 0.0 },
+          uColor1: { value: new Float32Array([1, 1, 1]) },
+          uColor2: { value: new Float32Array([1, 1, 1]) },
+          uColor3: { value: new Float32Array([1, 1, 1]) }
+        }
+      });
+
+      if (!program || !program.uniformLocations) return;
+
+      mesh = new Mesh(gl, { geometry, program });
+      ctxMap.set(container, { renderer, program, mesh });
+    } catch (err) {
+      console.warn('Scanner WebGL init failed:', err);
+      return;
+    }
+
+    const safeRender = () => {
+      try {
+        if (renderer && mesh && program && program.uniformLocations) {
+          renderer.render({ scene: mesh });
+        }
+      } catch (err) {
+        console.warn('Scanner render failed:', err);
       }
-    });
+    };
 
-    const mesh = new Mesh(gl, { geometry, program });
-    ctxMap.set(container, { renderer, program, mesh });
+    const canvas = gl.canvas;
 
     const setSize = () => {
-      const rect = container.getBoundingClientRect();
-      const w = Math.max(1, Math.floor(rect.width));
-      const h = Math.max(1, Math.floor(rect.height));
-      renderer.setSize(w, h);
-      const res = program.uniforms.iResolution.value;
-      res[0] = gl.drawingBufferWidth;
-      res[1] = gl.drawingBufferHeight;
-      renderer.render({ scene: mesh });
+      try {
+        const rect = container.getBoundingClientRect();
+        const w = Math.max(1, Math.floor(rect.width));
+        const h = Math.max(1, Math.floor(rect.height));
+        renderer.setSize(w, h);
+        const res = program.uniforms.iResolution.value;
+        res[0] = gl.drawingBufferWidth;
+        res[1] = gl.drawingBufferHeight;
+        safeRender();
+      } catch {}
     };
 
     const ro = new ResizeObserver(setSize);
@@ -262,37 +296,47 @@ const Scanner = ({
     canvas.addEventListener('mouseleave', onMouseLeave);
 
     let raf = 0;
-    let isVisible = true;
+    let isVisible = false;
     let isPageVisible = !document.hidden;
     let lastRenderTime = 0;
     const t0 = performance.now();
 
     const loop = t => {
       raf = requestAnimationFrame(loop);
-      if (t - lastRenderTime < ANIMATION_FRAME_INTERVAL) return;
-      lastRenderTime = t;
-      program.uniforms.iTime.value = (t - t0) * 0.001;
+      if (program?.uniforms?.iTime) {
+        program.uniforms.iTime.value = (t - t0) * 0.001;
+      }
 
       if (!mouseEnabledRef.current) {
         targetMouseActive = 0;
       }
       currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
       currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
-      program.uniforms.uMouse.value[0] = currentMouse[0];
-      program.uniforms.uMouse.value[1] = currentMouse[1];
+      if (program?.uniforms?.uMouse?.value) {
+        program.uniforms.uMouse.value[0] = currentMouse[0];
+        program.uniforms.uMouse.value[1] = currentMouse[1];
+      }
       mouseActive += 0.05 * (targetMouseActive - mouseActive);
-      program.uniforms.uMouseActive.value = mouseActive;
+      if (program?.uniforms?.uMouseActive) {
+        program.uniforms.uMouseActive.value = mouseActive;
+      }
 
-      renderer.render({ scene: mesh });
+      safeRender();
     };
 
+    const canvasId = 'scanner_' + Math.random().toString(36).substring(2, 7);
+
     const tryStart = () => {
-      if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop);
+      if (isVisible && isPageVisible && raf === 0) {
+        webGLTracker.register(canvasId);
+        raf = requestAnimationFrame(loop);
+      }
     };
     const tryStop = () => {
       if (raf !== 0) {
         cancelAnimationFrame(raf);
         raf = 0;
+        webGLTracker.unregister(canvasId);
       }
     };
 
@@ -311,7 +355,7 @@ const Scanner = ({
     };
     document.addEventListener('visibilitychange', onVisibility);
 
-    tryStart();
+    safeRender();
 
     return () => {
       tryStop();
@@ -324,7 +368,6 @@ const Scanner = ({
       try {
         container.removeChild(canvas);
       } catch {}
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 

@@ -8,7 +8,7 @@ import { GLSLImageHover } from './GLSLImageHover';
 import { ANIMATION_FPS } from '../utils/animation';
 import { DeferredRender } from './DeferredRender';
 
-const Scanner = lazy(() => import('./backgrounds/Scanner'));
+const Topography = lazy(() => import('./backgrounds/Topography'));
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.ticker.fps(ANIMATION_FPS);
@@ -31,7 +31,7 @@ const CURATED_IDS = [
 export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectProduct, onAddToCart }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const curated = useMemo(
-    () => CURATED_IDS.map(id => products.find(product => product.id === id)).filter((product): product is Produto => Boolean(product)),
+    () => CURATED_IDS.map(id => (Array.isArray(products) ? products : []).find(product => product.id === id)).filter((product): product is Produto => Boolean(product)),
     [products],
   );
 
@@ -39,23 +39,25 @@ export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectPr
     if (!sectionRef.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const context = gsap.context(() => {
       const cards = sectionRef.current?.querySelectorAll('.gsap-scroll-card');
-      cards?.forEach(card => {
-        gsap.fromTo(
-          card,
-          { opacity: 0.82, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 88%',
-              end: 'center 58%',
-              scrub: 0.5,
+      if (cards) {
+        Array.from(cards).forEach((card: any) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0.82, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                end: 'center 58%',
+                scrub: 0.5,
+              },
             },
-          },
-        );
-      });
+          );
+        });
+      }
     }, sectionRef.current);
     return () => context.revert();
   }, [curated]);
@@ -64,35 +66,29 @@ export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectPr
 
   return (
     <section id="curadoria" ref={sectionRef} className="curated-ambient relative isolate overflow-hidden bg-[#10050a] py-20 text-white sm:py-24 md:py-32">
-      <DeferredRender className="absolute inset-0" rootMargin="1200px 0px">
+      <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
         <Suspense fallback={null}>
-          <Scanner
-          color1="#4b0018"
-          color2="#c71955"
-          color3="#ff709f"
-          speed={0.35}
-          sweepSpeed={0.25}
-          sweepWidth={1.6}
-          sweepFalloff={2.4}
-          scale={1.7}
-          frequency={2}
-          ripple={0.22}
-          bandDensity={11}
-          lineSharpness={5.5}
-          glow={0.32}
-          scanDirection="vertical"
-          colorSpread={0.7}
-          brightness={1.2}
-          contrast={1.05}
-          softness={1.4}
-          vignette={0.45}
-          scanline
-          grain
-          grainIntensity={0.05}
-          opacity={1}
-          mouseInteraction={false}
-          mouseRadius={0.5}
-          mouseStrength={0.5}
+          <Topography
+            lowColor="#2e0310"
+            midColor="#47041B"
+            highColor="#FF9FFC"
+            speed={0.15}
+            morphAmount={3.0}
+            morphSpeed={0.07}
+            bands={2.5}
+            thickness={0.015}
+            scale={2.2}
+            pixelSize={1.0}
+            glow={0.8}
+            colorMode="elevation"
+            contrast={3.0}
+            brightness={1.1}
+            fillBands={true}
+            opacity={0.85}
+            grain={true}
+            grainIntensity={0.04}
+            mouseInteraction={false}
+            className="backdrop-blur-[2px]"
           />
         </Suspense>
       </DeferredRender>

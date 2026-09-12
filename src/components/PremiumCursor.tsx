@@ -22,6 +22,8 @@ export const PremiumCursor: React.FC = () => {
     };
     window.addEventListener('touchstart', handleTouchStart, { passive: true, once: true });
 
+    let lastTarget: EventTarget | null = null;
+
     const onMouseMove = (e: MouseEvent) => {
       pos.current.x = e.clientX;
       pos.current.y = e.clientY;
@@ -34,7 +36,10 @@ export const PremiumCursor: React.FC = () => {
         if (followerRef.current) followerRef.current.style.opacity = '1';
       }
 
-      // Determine hover target type
+      // Check hover target only when target changes to prevent excessive DOM traversal
+      if (e.target === lastTarget) return;
+      lastTarget = e.target;
+
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
@@ -45,24 +50,24 @@ export const PremiumCursor: React.FC = () => {
       if (interactive) {
         const customCursor = interactive.getAttribute('data-cursor') as CursorVariant | null;
         if (customCursor) {
-          setVariant(customCursor);
+          setVariant(prev => prev !== customCursor ? customCursor : prev);
         } else if (
           target.tagName === 'INPUT' ||
           target.tagName === 'TEXTAREA' ||
           target.isContentEditable
         ) {
-          setVariant('text');
+          setVariant(prev => prev !== 'text' ? 'text' : prev);
         } else if (
           interactive.closest('.group\\/shader') ||
           interactive.closest('.gsap-scroll-card') ||
           interactive.hasAttribute('data-product-card')
         ) {
-          setVariant('view');
+          setVariant(prev => prev !== 'view' ? 'view' : prev);
         } else {
-          setVariant('pointer');
+          setVariant(prev => prev !== 'pointer' ? 'pointer' : prev);
         }
       } else {
-        setVariant('default');
+        setVariant(prev => prev !== 'default' ? 'default' : prev);
       }
     };
 
@@ -87,15 +92,12 @@ export const PremiumCursor: React.FC = () => {
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
-    // Shared 24fps motion budget with lerp easing.
+    // Motion tick with lerp easing
     let rafId: number;
-    let lastRenderTime = 0;
     const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
 
-    const tick = (time: number) => {
+    const tick = () => {
       rafId = requestAnimationFrame(tick);
-      if (time - lastRenderTime < ANIMATION_FRAME_INTERVAL) return;
-      lastRenderTime = time;
       followerPos.current.x = lerp(followerPos.current.x, pos.current.x, 0.22);
       followerPos.current.y = lerp(followerPos.current.y, pos.current.y, 0.22);
 
@@ -106,7 +108,6 @@ export const PremiumCursor: React.FC = () => {
       if (followerRef.current) {
         followerRef.current.style.transform = `translate3d(${followerPos.current.x}px, ${followerPos.current.y}px, 0) translate(-50%, -50%)`;
       }
-
     };
 
     rafId = requestAnimationFrame(tick);

@@ -2,6 +2,7 @@ import React from 'react';
 import { Clock, ExternalLink, MapPin, MessageCircle } from 'lucide-react';
 import { COMPANY } from '../data/company';
 import DarkVeil from './backgrounds/DarkVeil';
+import { DeferredRender } from './DeferredRender';
 
 
 const MAP_TILES = [36736, 36737, 36738].flatMap((y) =>
@@ -10,20 +11,22 @@ const MAP_TILES = [36736, 36737, 36738].flatMap((y) =>
 
 export const StoreSection: React.FC = () => {
   return (
-    <section id="loja" className="relative isolate overflow-hidden bg-[#2B0210] py-20 text-left text-white sm:py-24 md:py-32">
+    <section id="loja" className="relative isolate overflow-hidden bg-[#47041B] py-20 text-left text-white sm:py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 z-0">
-        <DarkVeil
-          hueShift={-55}
-          noiseIntensity={0.035}
-          scanlineIntensity={0.04}
-          scanlineFrequency={1.15}
-          speed={0.32}
-          warpAmount={0.16}
-          resolutionScale={0.8}
-        />
-        <div className="absolute inset-0 bg-[#2B0210] mix-blend-color" />
+        <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
+          <DarkVeil
+            hueShift={0}
+            noiseIntensity={0.035}
+            scanlineIntensity={0.04}
+            scanlineFrequency={1.15}
+            speed={0.32}
+            warpAmount={0.16}
+            resolutionScale={0.85}
+          />
+        </DeferredRender>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,rgba(20,2,8,0.55)_85%)]" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.18),rgba(8,3,7,.62))]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(71,4,27,.25)_0%,rgba(10,2,6,.65)_100%)]" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-3xl sm:mb-14">

@@ -246,5 +246,13 @@ html.lenis, html.lenis body {
   *, *::before, *::after, html, body, input, textarea, select, button, a, [role="button"], [contenteditable], .cursor-pointer {
     cursor: auto !important;
   }
+
+  /* Mobile GPU Fill-Rate Optimization: eliminate heavy offscreen blur passes on mobile GPUs */
+  .bento-grid-item {
+    background-color: rgba(22, 5, 12, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
+
 

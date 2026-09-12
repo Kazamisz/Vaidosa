@@ -9,7 +9,7 @@ interface DeferredRenderProps {
 export const DeferredRender: React.FC<DeferredRenderProps> = ({
   children,
   className = '',
-  rootMargin = '1000px 0px',
+  rootMargin = '300px 0px',
 }) => {
   const markerRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(false);

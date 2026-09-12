@@ -3,6 +3,7 @@ import { Instagram, MapPin, Clock, Phone, Sparkles, ArrowUpRight } from 'lucide-
 import { COMPANY } from '../data/company';
 import { PremiumWhatsAppIcon } from './PremiumWhatsAppIcon';
 import { DeferredRender } from './DeferredRender';
+import { motion } from 'motion/react';
 
 const DarkVeil = lazy(() => import('./backgrounds/DarkVeil'));
 
@@ -20,46 +21,66 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
   };
 
   return (
-    <footer className="relative isolate overflow-hidden bg-[#080307] text-left text-stone-300 border-t border-rose-200/10">
+    <footer className="relative isolate overflow-hidden bg-[#47041B] text-left text-stone-300 border-t border-rose-900/30">
+      <DeferredRender className="pointer-events-none absolute inset-0 z-0" rootMargin="300px 0px">
+        <div className="absolute inset-0" style={{ transform: 'scaleY(-1)' }} aria-hidden="true">
+          <Suspense fallback={<div className="darkveil-fallback" />}>
+            <DarkVeil
+              hueShift={0}
+              noiseIntensity={0.035}
+              scanlineIntensity={0.04}
+              scanlineFrequency={1.15}
+              speed={0.32}
+              warpAmount={0.16}
+              resolutionScale={0.85}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#47041B]/70 via-transparent to-[#47041B]/90" />
+          </Suspense>
+        </div>
+      </DeferredRender>
       <div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_18%_12%,rgba(121,9,49,.72),transparent_38%),radial-gradient(ellipse_at_84%_44%,rgba(169,41,90,.38),transparent_34%),linear-gradient(145deg,#080307_5%,#260812_48%,#10050a_100%)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-35 bg-[linear-gradient(115deg,transparent_20%,rgba(246,202,217,.09)_48%,transparent_72%)]"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-30 bg-[linear-gradient(115deg,transparent_20%,rgba(246,202,217,0.08)_48%,transparent_72%)]"
         aria-hidden="true"
       />
       {/* Massive High-Contrast Action CTA Chapter */}
-      <div className="relative overflow-hidden border-b border-rose-200/10 bg-[#2B0210] py-28 md:py-40">
-        <DeferredRender className="pointer-events-none absolute inset-0 z-0" rootMargin="1200px 0px">
-          <div className="absolute inset-0" style={{ transform: 'scaleY(-1)' }} aria-hidden="true">
-            <Suspense fallback={null}>
-              <DarkVeil
-                hueShift={-55}
-                noiseIntensity={0.035}
-                scanlineIntensity={0.04}
-                scanlineFrequency={1.15}
-                speed={0.32}
-                warpAmount={0.16}
-                resolutionScale={0.8}
-              />
-              <div className="absolute inset-0 bg-[#2B0210] mix-blend-color" />
-            </Suspense>
-          </div>
-        </DeferredRender>
+      <div className="relative overflow-hidden border-b border-rose-900/30 py-28 md:py-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <span className="text-xs font-semibold tracking-[0.35em] uppercase text-fuchsia-300 mb-4 block drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]">
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-xs font-semibold tracking-[0.35em] uppercase text-fuchsia-300 mb-4 block drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
+          >
             Atendimento Direto &amp; Personalizado
-          </span>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-[1.1] max-w-4xl mx-auto mb-6 text-balance">
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-[1.1] max-w-4xl mx-auto mb-6 text-balance"
+          >
             Encontre a peça exata para vestir sua autenticidade.
-          </h2>
-          <p className="text-stone-300 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed mb-12">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-stone-300 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed mb-12"
+          >
             Nossa equipe em Birigui tira suas dúvidas sobre tecidos, caimento e medidas em tempo real.
-          </p>
+          </motion.p>
 
           {/* Ultra High-Contrast Action Buttons */}
-          <div className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-5 lg:flex-row">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.75, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-5 lg:flex-row"
+          >
             <a
               href={COMPANY.whatsapp_url}
               target="_blank"
@@ -74,13 +95,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
               className="w-full px-10 py-4.5 rounded-full bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] text-white font-semibold text-xs tracking-widest uppercase transition-all shadow-[0_0_26px_rgba(121,9,49,0.46)] hover:shadow-[0_0_34px_rgba(169,41,90,0.58)] hover:scale-105 flex items-center justify-center space-x-2.5 cursor-pointer border border-rose-200/30 lg:flex-1"
             >
               <img
-              src="/images/icon-vaidosaAI-1-96.webp"
+                src="/images/icon-vaidosaAI-1-96.webp"
                 alt="IA"
                 className="h-5 w-5 rounded-full object-cover ring-1 ring-white/60 shadow-[0_0_8px_rgba(169,41,90,0.62)]"
               />
               <span>Consultora com Inteligência Artificial</span>
             </button>
-          </div>
+          </motion.div>
         </div>
 
       </div>
@@ -90,7 +111,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-stone-800/80">
           
           {/* Brand Info (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 space-y-6"
+          >
             <div className="space-y-3">
               <button
                 onClick={() => scrollTo('inicio')}
@@ -135,10 +162,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
                 <PremiumWhatsAppIcon size={18} className="w-4 h-4" />
               </a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Quick Links (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-3 space-y-4"
+          >
             <h3 className="text-xs font-semibold uppercase tracking-[0.25em] text-white">
               Navegação
             </h3>
@@ -184,10 +217,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
                 </button>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Store Location & Hours (4 cols) */}
-          <div className="lg:col-span-4 space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.7, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-4 space-y-4"
+          >
             <h3 className="text-xs font-semibold uppercase tracking-[0.25em] text-white">
               Atendimento Presencial
             </h3>
@@ -205,15 +244,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
                 <span>{COMPANY.telefone}</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
         </div>
 
         {/* Bottom Rights Notice */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-20px' }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-4"
+        >
           <p>© {new Date().getFullYear()} {COMPANY.nome}. Todos os direitos reservados.</p>
           <p>Birigui - SP • Brasil</p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );
 };
+

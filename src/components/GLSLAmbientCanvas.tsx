@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Renderer, Camera, Transform, Program, Mesh, Plane } from 'ogl';
+import { ANIMATION_FRAME_INTERVAL } from '../utils/animation';
 
 interface GLSLAmbientCanvasProps {
   className?: string;
@@ -76,10 +77,17 @@ export const GLSLAmbientCanvas: React.FC<GLSLAmbientCanvasProps> = ({ className 
     let camera: Camera;
     let gl: any;
 
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+    };
+    canvas.addEventListener('webglcontextlost', handleContextLost, false);
+
     try {
       renderer = new Renderer({
         canvas,
         alpha: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
         antialias: false,
         dpr: Math.min(window.devicePixelRatio || 1, 1.5),
       });
@@ -135,9 +143,9 @@ export const GLSLAmbientCanvas: React.FC<GLSLAmbientCanvasProps> = ({ className 
 
     let rafId: number;
     let startTime = performance.now();
-    const render = () => {
+    const render = (time: number) => {
       try {
-        const elapsed = (performance.now() - startTime) * 0.001;
+        const elapsed = (time - startTime) * 0.001;
         mouse.x += (mouse.targetX - mouse.x) * 0.05;
         mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
@@ -156,7 +164,7 @@ export const GLSLAmbientCanvas: React.FC<GLSLAmbientCanvasProps> = ({ className 
       rafId = requestAnimationFrame(render);
     };
 
-    render();
+    rafId = requestAnimationFrame(render);
 
     const resizeObserver = new ResizeObserver(() => {
       updateSize();
@@ -165,12 +173,9 @@ export const GLSLAmbientCanvas: React.FC<GLSLAmbientCanvasProps> = ({ className 
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
       resizeObserver.disconnect();
       cancelAnimationFrame(rafId);
-      try {
-        const ext = gl.getExtension('WEBGL_lose_context');
-        if (ext) ext.loseContext();
-      } catch {}
     };
   }, []);
 

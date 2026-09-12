@@ -136,54 +136,92 @@ export default function MoltenMetal({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
-    });
-    const gl = renderer.gl;
-    const canvas = gl.canvas as HTMLCanvasElement;
-    gl.clearColor(0, 0, 0, 0);
-    canvas.setAttribute('aria-hidden', 'true');
-    container.appendChild(canvas);
 
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        iTime: { value: 0 },
-        iResolution: { value: new Float32Array([1, 1]) },
-        uSpeed: { value: speed },
-        uScale: { value: scale },
-        uDetail: { value: Math.min(Math.max(detail, 1), 8) },
-        uGlow: { value: glow },
-        uCoreSize: { value: Math.max(coreSize, 0.001) },
-        uSwirl: { value: swirl },
-        uFold: { value: fold },
-        uBlackPoint: { value: blackPoint },
-        uBrightness: { value: brightness },
-        uGrain: { value: grain ? 1 : 0 },
-        uGrainIntensity: { value: grainIntensity },
-        uOpacity: { value: opacity },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-        uMouseStrength: { value: mouseStrength },
-        uEnableMouse: { value: mouseInteraction },
-        uColor1: { value: new Float32Array(hexToRgb(color1)) },
-        uColor2: { value: new Float32Array(hexToRgb(color2)) },
-        uColor3: { value: new Float32Array(hexToRgb(color3)) },
-      },
-    });
-    const mesh = new Mesh(gl, { geometry, program });
+    let renderer: any = null;
+    let gl: any = null;
+    let program: any = null;
+    let mesh: any = null;
+
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+      });
+      gl = renderer.gl;
+      if (!gl) return;
+
+      const canvas = gl.canvas as HTMLCanvasElement;
+      gl.clearColor(0, 0, 0, 0);
+      canvas.setAttribute('aria-hidden', 'true');
+
+      const handleContextLost = (e: Event) => {
+        e.preventDefault();
+      };
+      canvas.addEventListener('webglcontextlost', handleContextLost, false);
+
+      container.appendChild(canvas);
+
+      const geometry = new Triangle(gl);
+      program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: { value: new Float32Array([1, 1]) },
+          uSpeed: { value: speed },
+          uScale: { value: scale },
+          uDetail: { value: Math.min(Math.max(detail, 1), 8) },
+          uGlow: { value: glow },
+          uCoreSize: { value: Math.max(coreSize, 0.001) },
+          uSwirl: { value: swirl },
+          uFold: { value: fold },
+          uBlackPoint: { value: blackPoint },
+          uBrightness: { value: brightness },
+          uGrain: { value: grain ? 1 : 0 },
+          uGrainIntensity: { value: grainIntensity },
+          uOpacity: { value: opacity },
+          uMouse: { value: new Float32Array([0.5, 0.5]) },
+          uMouseStrength: { value: mouseStrength },
+          uEnableMouse: { value: mouseInteraction },
+          uColor1: { value: new Float32Array(hexToRgb(color1)) },
+          uColor2: { value: new Float32Array(hexToRgb(color2)) },
+          uColor3: { value: new Float32Array(hexToRgb(color3)) },
+        },
+      });
+
+      if (!program || !program.uniformLocations) return;
+
+      mesh = new Mesh(gl, { geometry, program });
+    } catch (err) {
+      console.warn('MoltenMetal WebGL init failed:', err);
+      return;
+    }
+
+    const safeRender = () => {
+      try {
+        if (renderer && mesh && program && program.uniformLocations) {
+          renderer.render({ scene: mesh });
+        }
+      } catch (err) {
+        console.warn('MoltenMetal render failed:', err);
+      }
+    };
+
+    const canvas = gl.canvas as HTMLCanvasElement;
 
     const resize = () => {
-      const rect = container.getBoundingClientRect();
-      renderer.setSize(Math.max(1, Math.floor(rect.width)), Math.max(1, Math.floor(rect.height)));
-      program.uniforms.iResolution.value[0] = gl.drawingBufferWidth;
-      program.uniforms.iResolution.value[1] = gl.drawingBufferHeight;
-      renderer.render({ scene: mesh });
+      try {
+        const rect = container.getBoundingClientRect();
+        renderer.setSize(Math.max(1, Math.floor(rect.width)), Math.max(1, Math.floor(rect.height)));
+        if (program.uniforms?.iResolution?.value) {
+          program.uniforms.iResolution.value[0] = gl.drawingBufferWidth;
+          program.uniforms.iResolution.value[1] = gl.drawingBufferHeight;
+        }
+        safeRender();
+      } catch {}
     };
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
@@ -200,20 +238,22 @@ export default function MoltenMetal({
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let frame = 0;
-    let visible = true;
+    let visible = false;
     let pageVisible = !document.hidden;
     const startTime = performance.now();
     let lastRenderTime = 0;
     const loop = (time: number) => {
       frame = requestAnimationFrame(loop);
-      if (time - lastRenderTime < ANIMATION_FRAME_INTERVAL) return;
-      lastRenderTime = time;
-      program.uniforms.iTime.value = (time - startTime) * 0.001;
+      if (program.uniforms?.iTime) {
+        program.uniforms.iTime.value = (time - startTime) * 0.001;
+      }
       currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
       currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
-      program.uniforms.uMouse.value[0] = currentMouse[0];
-      program.uniforms.uMouse.value[1] = currentMouse[1];
-      renderer.render({ scene: mesh });
+      if (program.uniforms?.uMouse?.value) {
+        program.uniforms.uMouse.value[0] = currentMouse[0];
+        program.uniforms.uMouse.value[1] = currentMouse[1];
+      }
+      safeRender();
     };
     const start = () => {
       if (!reduceMotion && visible && pageVisible && frame === 0) frame = requestAnimationFrame(loop);
@@ -232,7 +272,7 @@ export default function MoltenMetal({
       pageVisible ? start() : stop();
     };
     document.addEventListener('visibilitychange', onVisibility);
-    start();
+    safeRender();
 
     return () => {
       stop();
@@ -241,7 +281,6 @@ export default function MoltenMetal({
       document.removeEventListener('visibilitychange', onVisibility);
       if (mouseInteraction) window.removeEventListener('pointermove', onPointerMove);
       if (canvas.parentNode === container) container.removeChild(canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [blackPoint, brightness, color1, color2, color3, coreSize, detail, fold, glow, grain, grainIntensity, mouseInteraction, mouseStrength, opacity, scale, speed, swirl]);
 

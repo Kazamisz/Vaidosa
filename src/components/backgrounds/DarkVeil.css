@@ -11,10 +11,10 @@
   inset: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 14% 18%, rgba(238, 83, 139, .68), transparent 32%),
-    radial-gradient(ellipse at 82% 76%, rgba(147, 19, 68, .72), transparent 38%),
-    linear-gradient(132deg, #090205 0%, #360718 42%, #6b0b31 62%, #100308 100%);
-  background-size: 145% 145%, 160% 160%, 130% 130%;
+    radial-gradient(ellipse at 18% 22%, rgba(147, 19, 68, .75), transparent 40%),
+    radial-gradient(ellipse at 82% 76%, rgba(71, 4, 27, .95), transparent 45%),
+    linear-gradient(135deg, #090205 0%, #47041B 38%, #730a2f 65%, #120208 100%);
+  background-size: 140% 140%, 160% 160%, 130% 130%;
   filter: hue-rotate(var(--dark-veil-hue, 0deg));
   animation: darkveil-drift 10s ease-in-out infinite alternate;
   will-change: background-position, transform;

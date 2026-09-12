@@ -52,7 +52,7 @@ export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
           </button>
         </div>
 
-        <div className="grid w-full gap-3 lg:flex lg:h-[min(680px,72svh)] lg:min-h-[430px]">
+        <div className="grid w-full gap-3 lg:flex lg:h-[min(680px,72svh)] lg:min-h-[430px] [contain:layout_style]">
           {items.map((item, index) => {
             const active = activeIndex === index;
             return (
@@ -63,31 +63,39 @@ export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
                 onMouseEnter={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
                 data-cursor="view"
-                className={`group relative h-[270px] w-full overflow-hidden rounded-3xl border border-white/10 bg-stone-950 text-left shadow-[0_20px_60px_rgba(20,0,8,.26)] transition-[flex,transform,border-color] duration-700 ease-out sm:h-[330px] lg:h-full ${
+                className={`group relative h-[270px] w-full overflow-hidden rounded-3xl border border-white/10 bg-stone-950 text-left shadow-[0_20px_60px_rgba(20,0,8,.26)] transition-[flex-grow,border-color] duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-[flex-grow] [contain:paint] transform-gpu sm:h-[330px] lg:h-full ${
                   active ? 'lg:flex-[3.5] lg:border-rose-300/35' : 'lg:flex-1'
                 }`}
               >
                 <img
                   src={getImageUrl(item.imagens[0])}
                   alt={item.titulo}
-                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105 will-change-transform transform-gpu"
                   loading="lazy"
+                  decoding="async"
                 />
-                <div className={`absolute inset-0 transition-colors duration-500 ${active ? 'bg-gradient-to-t from-black/90 via-black/30 to-black/15' : 'bg-black/45 lg:bg-black/60'}`} />
-                <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-7">
+                {/* Fixed base dark overlay */}
+                <div className="absolute inset-0 bg-black/50 transition-opacity duration-300 ease-out" />
+                {/* Active gradient overlay with pure GPU opacity transition */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 ease-out pointer-events-none transform-gpu ${
+                    active ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+                <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-7 pointer-events-none">
                   <div className="flex items-center justify-between gap-3">
-                    <span className={`max-w-[75%] rounded-full border border-white/15 bg-black/35 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-100 backdrop-blur-md transition-opacity duration-300 sm:text-[11px] ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
+                    <span className={`max-w-[75%] rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-100 backdrop-blur-md transition-opacity duration-300 ease-out sm:text-[11px] transform-gpu ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
                       {item.categoria}
                     </span>
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-stone-950 transition-transform duration-300 group-hover:rotate-45">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-stone-950 transition-transform duration-300 ease-out group-hover:rotate-45 transform-gpu">
                       <ArrowUpRight className="h-5 w-5" />
                     </span>
                   </div>
-                  <div className={`max-w-xl transition-all duration-500 ${active ? 'translate-y-0 opacity-100' : 'translate-y-0 opacity-100 lg:translate-y-3 lg:opacity-0'}`}>
+                  <div className={`max-w-xl transition-[transform,opacity] duration-300 ease-out transform-gpu ${active ? 'translate-y-0 opacity-100' : 'translate-y-0 opacity-100 lg:translate-y-2 lg:opacity-0'}`}>
                     <h3 className="text-2xl font-normal tracking-tight text-white sm:text-3xl lg:text-4xl">
                       {item.titulo}
                     </h3>
-                    <p className={`mt-2 line-clamp-2 text-sm leading-relaxed text-stone-200 transition-opacity duration-500 ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
+                    <p className={`mt-2 line-clamp-2 text-sm leading-relaxed text-stone-200 transition-opacity duration-300 ease-out ${active ? 'opacity-100' : 'opacity-100 lg:opacity-0'}`}>
                       {item.descricao_curta}
                     </p>
                   </div>

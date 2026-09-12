@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
 import { getImageSrcSet, getImageUrl } from '../utils/image';
-import Ferrofluid from './backgrounds/Ferrofluid';
+import { DeferredRender } from './DeferredRender';
+
+const Ferrofluid = lazy(() => import('./backgrounds/Ferrofluid'));
 
 interface GaplessBentoProps {
   products: Produto[];
@@ -32,20 +34,24 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
 
   return (
     <section id="bento" className="py-28 md:py-40 bg-stone-950 relative overflow-hidden text-white">
-      <Ferrofluid
-        colors={['#4a0018', '#790931', '#b3124d', '#ef87aa']}
-        backgroundColor="#080307"
-        speed={0.075}
-        scale={1.9}
-        turbulence={0.85}
-        rimWidth={0.16}
-        sharpness={2.8}
-        shimmer={0.72}
-        glow={1.8}
-        flowDirection="up"
-        opacity={0.92}
-        mouseInteraction={false}
-      />
+      <DeferredRender className="absolute inset-0 z-0" rootMargin="300px 0px">
+        <Suspense fallback={null}>
+          <Ferrofluid
+            colors={['#4a0018', '#790931', '#b3124d', '#ef87aa']}
+            backgroundColor="#080307"
+            speed={0.075}
+            scale={1.9}
+            turbulence={0.85}
+            rimWidth={0.16}
+            sharpness={2.8}
+            shimmer={0.72}
+            glow={1.8}
+            flowDirection="up"
+            opacity={0.92}
+            mouseInteraction={false}
+          />
+        </Suspense>
+      </DeferredRender>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-20 gap-6">

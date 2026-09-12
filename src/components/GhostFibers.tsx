@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 import './GhostFibers.css';
-import { ANIMATION_FPS } from '../utils/animation';
+import { ANIMATION_FPS, getWebGLDpr, isMobileDevice, webGLTracker } from '../utils/animation';
 
 const hexToRgb = hex => {
   const value = hex.trim().replace(/^#/, '');
@@ -18,16 +18,18 @@ const setColor = (uniform, hex) => {
   uniform.value[2] = color[2];
 };
 
-const vertex = `#version 300 es
-in vec2 position;
+const vertex = `
+attribute vec2 position;
 
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
-const fragment = `#version 300 es
-precision highp float;
+const fragment = `
+#ifdef GL_ES
+precision mediump float;
+#endif
 
 uniform vec2 uResolution;
 uniform float uTime;
@@ -56,9 +58,7 @@ uniform float uLightMode;
 uniform vec3 uLineColor;
 uniform vec3 uGlowColor;
 
-out vec4 fragColor;
-
-#define MAX_LAYERS 10
+#define MAX_LAYERS 5
 
 mat2 rotate2d(float angle) {
   float sine = sin(angle);
@@ -75,13 +75,7 @@ float grainHash(vec2 point) {
 float layeredGrain(vec2 fragmentPixel) {
   vec2 point = mod(fragmentPixel + vec2(uTime * 30.0, -uTime * 21.0), 1024.0);
   vec2 rotated = mat2(0.8, -0.5, 0.5, 0.8) * point;
-  float grain = 0.0;
-  grain += 0.40 * grainHash(rotated);
-  grain += 0.25 * grainHash(rotated * 2.0 + 17.0);
-  grain += 0.20 * grainHash(rotated * 4.0 + 47.0);
-  grain += 0.10 * grainHash(rotated * 8.0 + 113.0);
-  grain += 0.05 * grainHash(rotated * 16.0 + 191.0);
-  return grain;
+  return 0.6 * grainHash(rotated) + 0.4 * grainHash(rotated * 2.0 + 17.0);
 }
 
 void main() {
@@ -144,7 +138,7 @@ void main() {
 
   float noise = (layeredGrain(gl_FragCoord.xy) - 0.5) * uGrain;
   outputColor = clamp(outputColor + noise, 0.0, 1.0);
-  fragColor = vec4(outputColor, 1.0);
+  gl_FragColor = vec4(outputColor, 1.0);
 }
 `;
 
@@ -186,54 +180,84 @@ const GhostFibers = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: false,
-      antialias: false,
-      dpr: Math.min(Math.max(dpr, 0.5), 2)
-    });
-    const gl = renderer.gl;
-    const canvas = gl.canvas;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
-    canvas.setAttribute('aria-hidden', 'true');
-    container.appendChild(canvas);
+    let renderer: any = null;
+    let gl: any = null;
+    let canvas: any = null;
+    let program: any = null;
+    let mesh: any = null;
 
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        uResolution: { value: new Float32Array([1, 1]) },
-        uTime: { value: 0 },
-        uSpeed: { value: 0.2 },
-        uScale: { value: 2 },
-        uRotation: { value: 0 },
-        uRotationSpeed: { value: 0.25 },
-        uLayers: { value: 4 },
-        uWaveAmplitude: { value: 0.015 },
-        uWaveFrequency: { value: 3 },
-        uWaveSpeed: { value: 0.15 },
-        uLayerSpeed: { value: 0.08 },
-        uTwist: { value: 0.1 },
-        uTwistFrequency: { value: 5 },
-        uTwistSpeed: { value: 1.2 },
-        uLineFrequency: { value: 5 },
-        uLineSpacing: { value: 2 },
-        uLineSharpness: { value: 16 },
-        uGlowFalloff: { value: 10 },
-        uGlowIntensity: { value: 1.6 },
-        uBrightness: { value: 2 },
-        uBlueBoost: { value: 1.25 },
-        uVignette: { value: 0.8 },
-        uGrain: { value: 0.05 },
-        uLightMode: { value: 0 },
-        uLineColor: { value: new Float32Array(hexToRgb('#2d1537')) },
-        uGlowColor: { value: new Float32Array(hexToRgb('#a855f7')) }
+    try {
+      const isMobile = isMobileDevice();
+      const effectiveDpr = getWebGLDpr();
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+        antialias: false,
+        dpr: effectiveDpr,
+        powerPreference: 'high-performance'
+      });
+      gl = renderer.gl;
+      if (!gl) return;
+
+      canvas = gl.canvas;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.display = 'block';
+      canvas.setAttribute('aria-hidden', 'true');
+
+      const handleContextLost = (e: Event) => {
+        e.preventDefault();
+      };
+      canvas.addEventListener('webglcontextlost', handleContextLost, false);
+
+      container.appendChild(canvas);
+
+      const geometry = new Triangle(gl);
+      program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          uResolution: { value: new Float32Array([1, 1]) },
+          uTime: { value: 0 },
+          uSpeed: { value: 0.2 },
+          uScale: { value: 2 },
+          uRotation: { value: 0 },
+          uRotationSpeed: { value: 0.25 },
+          uLayers: { value: isMobile ? 3 : 4 }, // Adaptive layer count for mobile
+          uWaveAmplitude: { value: 0.015 },
+          uWaveFrequency: { value: 3 },
+          uWaveSpeed: { value: 0.15 },
+          uLayerSpeed: { value: 0.08 },
+          uTwist: { value: 0.1 },
+          uTwistFrequency: { value: 5 },
+          uTwistSpeed: { value: 1.2 },
+          uLineFrequency: { value: 5 },
+          uLineSpacing: { value: 2 },
+          uLineSharpness: { value: 16 },
+          uGlowFalloff: { value: 10 },
+          uGlowIntensity: { value: 1.6 },
+          uBrightness: { value: 2 },
+          uBlueBoost: { value: 1.25 },
+          uVignette: { value: 0.8 },
+          uGrain: { value: 0.05 },
+          uLightMode: { value: 0 },
+          uLineColor: { value: new Float32Array(hexToRgb('#2d1537')) },
+          uGlowColor: { value: new Float32Array(hexToRgb('#a855f7')) }
+        }
+      });
+
+      if (!program || !program.uniformLocations) {
+        return;
       }
-    });
-    const mesh = new Mesh(gl, { geometry, program });
+
+      mesh = new Mesh(gl, { geometry, program });
+    } catch (err) {
+      console.warn('GhostFibers WebGL initialization failed:', err);
+      return;
+    }
+
+    const canvasId = 'ghostfibers_' + Math.random().toString(36).substring(2, 7);
 
     let frameId = 0;
     let elapsed = 0;
@@ -241,14 +265,25 @@ const GhostFibers = ({
     let lastRenderTime = 0;
     let frameRate = ANIMATION_FPS;
     let isPaused = false;
-    let isVisible = true;
+    let isVisible = false;
     let isPageVisible = !document.hidden;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    const render = () => renderer.render({ scene: mesh });
+    const render = () => {
+      try {
+        if (renderer && mesh && program && program.uniformLocations) {
+          renderer.render({ scene: mesh });
+        }
+      } catch (err) {
+        console.warn('GhostFibers render error:', err);
+      }
+    };
     const stop = () => {
-      if (frameId !== 0) cancelAnimationFrame(frameId);
-      frameId = 0;
+      if (frameId !== 0) {
+        cancelAnimationFrame(frameId);
+        frameId = 0;
+        webGLTracker.unregister(canvasId);
+      }
     };
     const canAnimate = () => isVisible && isPageVisible && !isPaused && !reducedMotion.matches;
 
@@ -260,17 +295,15 @@ const GhostFibers = ({
       previousTime = now;
       elapsed += delta;
 
-      if (now - lastRenderTime >= 1000 / frameRate - 0.5) {
-        program.uniforms.uTime.value = elapsed;
-        render();
-        lastRenderTime = now;
-      }
+      program.uniforms.uTime.value = elapsed;
+      render();
 
       frameId = requestAnimationFrame(loop);
     };
 
     const start = () => {
       if (!canAnimate() || frameId !== 0) return;
+      webGLTracker.register(canvasId);
       previousTime = performance.now();
       frameId = requestAnimationFrame(loop);
     };
@@ -329,7 +362,7 @@ const GhostFibers = ({
     });
 
     setSize();
-    start();
+    render();
 
     return () => {
       stop();
@@ -338,8 +371,7 @@ const GhostFibers = ({
       document.removeEventListener('visibilitychange', handleVisibility);
       reducedMotion.removeEventListener('change', handleReducedMotion);
       contexts.delete(container);
-      if (canvas.parentNode === container) container.removeChild(canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (canvas && canvas.parentNode === container) container.removeChild(canvas);
     };
   }, [dpr]);
 

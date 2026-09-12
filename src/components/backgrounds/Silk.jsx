@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
-import { ANIMATION_FRAME_INTERVAL, getWebGLDpr } from '../../utils/animation';
+import { ANIMATION_FRAME_INTERVAL, getWebGLDpr, webGLTracker } from '../../utils/animation';
 
 const hexToNormalizedRGB = hex => {
   const value = hex.replace('#', '');
@@ -100,38 +100,73 @@ const Silk = ({
     const container = containerRef.current;
     if (!container) return undefined;
 
-    const renderer = new Renderer({
-      alpha: false,
-      antialias: false,
-      dpr: getWebGLDpr(),
-      webgl: 1,
-      powerPreference: 'high-performance'
-    });
-    const gl = renderer.gl;
-    gl.canvas.style.width = '100%';
-    gl.canvas.style.height = '100%';
-    gl.canvas.style.display = 'block';
-    container.appendChild(gl.canvas);
+    let renderer = null;
+    let gl = null;
+    let program = null;
+    let mesh = null;
 
-    const program = new Program(gl, {
-      vertex: vertexShader,
-      fragment: fragmentShader,
-      uniforms: {
-        uTime: { value: 0 },
-        uColor: { value: hexToNormalizedRGB(color) },
-        uSpeed: { value: speed },
-        uScale: { value: scale },
-        uRotation: { value: rotation },
-        uNoiseIntensity: { value: noiseIntensity },
-        uLightMode: { value: lightMode ? 1 : 0 }
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+        antialias: false,
+        dpr: getWebGLDpr(),
+        powerPreference: 'high-performance'
+      });
+      gl = renderer.gl;
+      if (!gl) return undefined;
+
+      gl.canvas.style.width = '100%';
+      gl.canvas.style.height = '100%';
+      gl.canvas.style.display = 'block';
+
+      const handleContextLost = (e) => {
+        e.preventDefault();
+      };
+      gl.canvas.addEventListener('webglcontextlost', handleContextLost, false);
+
+      container.appendChild(gl.canvas);
+
+      program = new Program(gl, {
+        vertex: vertexShader,
+        fragment: fragmentShader,
+        uniforms: {
+          uTime: { value: 0 },
+          uColor: { value: hexToNormalizedRGB(color) },
+          uSpeed: { value: speed },
+          uScale: { value: scale },
+          uRotation: { value: rotation },
+          uNoiseIntensity: { value: noiseIntensity },
+          uLightMode: { value: lightMode ? 1 : 0 }
+        }
+      });
+
+      if (!program || !program.uniformLocations) return undefined;
+      programRef.current = program;
+
+      mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
+    } catch (err) {
+      console.warn('Silk WebGL init failed:', err);
+      return undefined;
+    }
+
+    const safeRender = () => {
+      try {
+        if (renderer && mesh && program && program.uniformLocations) {
+          renderer.render({ scene: mesh });
+        }
+      } catch (err) {
+        console.warn('Silk render failed:', err);
       }
-    });
-    programRef.current = program;
+    };
 
-    const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
     const resize = () => {
-      const { width, height } = container.getBoundingClientRect();
-      renderer.setSize(Math.max(1, width), Math.max(1, height));
+      try {
+        const { width, height } = container.getBoundingClientRect();
+        renderer.setSize(Math.max(1, width), Math.max(1, height));
+        safeRender();
+      } catch {}
     };
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
@@ -140,29 +175,35 @@ const Silk = ({
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame = 0;
     let lastRenderTime = 0;
-    let visible = true;
+    let visible = false;
     let pageVisible = !document.hidden;
 
     const renderFrame = time => {
-      program.uniforms.uTime.value = time * 0.0001;
-      renderer.render({ scene: mesh });
+      if (program.uniforms?.uTime) {
+        program.uniforms.uTime.value = time * 0.0001;
+      }
+      safeRender();
     };
     const canAnimate = () => visible && pageVisible && !reducedMotion.matches;
     const loop = time => {
       frame = 0;
       if (!canAnimate()) return;
-      if (time - lastRenderTime >= ANIMATION_FRAME_INTERVAL) {
-        lastRenderTime = time;
-        renderFrame(time);
-      }
+      renderFrame(time);
       frame = requestAnimationFrame(loop);
     };
+    const canvasId = 'silk_' + Math.random().toString(36).substring(2, 7);
     const startLoop = () => {
-      if (canAnimate() && frame === 0) frame = requestAnimationFrame(loop);
+      if (canAnimate() && frame === 0) {
+        webGLTracker.register(canvasId);
+        frame = requestAnimationFrame(loop);
+      }
     };
     const stopLoop = () => {
-      if (frame) cancelAnimationFrame(frame);
-      frame = 0;
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        webGLTracker.unregister(canvasId);
+      }
     };
 
     const intersectionObserver = new IntersectionObserver(([entry]) => {
@@ -188,7 +229,6 @@ const Silk = ({
     document.addEventListener('visibilitychange', onVisibilityChange);
     reducedMotion.addEventListener('change', onReducedMotionChange);
     renderFrame(performance.now());
-    startLoop();
 
     return () => {
       stopLoop();
@@ -197,8 +237,7 @@ const Silk = ({
       document.removeEventListener('visibilitychange', onVisibilityChange);
       reducedMotion.removeEventListener('change', onReducedMotionChange);
       programRef.current = null;
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-      gl.canvas.remove();
+      gl.canvas?.remove();
     };
   }, []);
 

@@ -16,7 +16,8 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
   // Aggregate category counts dynamically from products.json
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, { count: number; sampleImage: string }> = {};
-    (products || []).forEach(p => {
+    const safeProducts = Array.isArray(products) ? products : [];
+    safeProducts.forEach(p => {
       if (p && p.categoria) {
         if (!counts[p.categoria]) {
           counts[p.categoria] = { count: 0, sampleImage: `/${(p.imagens?.[0] || '').replace(/^\/+/, '')}` };
