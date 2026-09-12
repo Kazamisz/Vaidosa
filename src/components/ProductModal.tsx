@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, MapPin, ShoppingBag, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Share2, ShoppingBag, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Produto } from '../types';
 import { getImageUrl } from '../utils/image';
@@ -54,6 +54,30 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   const totalImages = images.length;
   const currentImage = getImageUrl(images[activeImageIndex] || '');
 
+  const handleShare = async () => {
+    triggerHapticFeedback(15);
+    const shareData = {
+      title: product.titulo,
+      text: `Confira esta peça incrível na Vaidosa Plus Size: ${product.titulo}`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copiado para a área de transferência!');
+      }
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('Link copiado para a área de transferência!');
+        } catch {}
+      }
+    }
+  };
+
   return (
     <motion.div
       role="dialog"
@@ -74,17 +98,28 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
         className="relative max-h-[100dvh] w-full overflow-hidden bg-[#12060c] text-left text-stone-100 shadow-[0_30px_100px_rgba(55,0,21,.75)] sm:max-h-[calc(100dvh-2rem)] sm:max-w-5xl sm:rounded-3xl sm:border sm:border-rose-200/25"
         onClick={event => event.stopPropagation()}
       >
-        <button
-          type="button"
-          onClick={() => {
-            triggerHapticFeedback(10);
-            onClose();
-          }}
-          className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#210a14]/90 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105 hover:bg-[#3b0c20] cursor-pointer sm:right-4 sm:top-4"
-          aria-label="Fechar janela"
-        >
-          <X className="h-5 w-5" />
-        </button>
+        <div className="absolute right-3 top-3 z-30 flex items-center gap-2 sm:right-4 sm:top-4">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#210a14]/90 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105 hover:bg-[#3b0c20] cursor-pointer"
+            aria-label="Compartilhar peça"
+            title="Compartilhar peça"
+          >
+            <Share2 className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHapticFeedback(10);
+              onClose();
+            }}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#210a14]/90 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105 hover:bg-[#3b0c20] cursor-pointer"
+            aria-label="Fechar janela"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
         <div
           data-lenis-prevent

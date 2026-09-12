@@ -123,7 +123,7 @@ export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectPr
               data-cursor="view"
               className="premium-product-card bento-grid-item gsap-scroll-card group flex min-w-0 flex-col overflow-hidden rounded-[28px] text-left text-white transition-transform duration-300 hover:-translate-y-1"
             >
-              <div className="relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
+              <div className="catalog-card-image relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
                 <GLSLImageHover
                   src={getImageUrl(item.imagens[0])}
                   alt={item.titulo}

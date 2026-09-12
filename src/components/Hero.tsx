@@ -63,77 +63,213 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
       {/* Cinematic Center Content Container - Max-w-6xl / 7xl */}
       <div className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col items-center justify-center my-auto w-full">
         {/* Subtle Brand Tagline */}
-        <span className="text-xs sm:text-sm font-semibold tracking-[0.35em] uppercase text-fuchsia-300 -translate-y-2 sm:-translate-y-3 mb-3 sm:mb-5 drop-shadow-[0_0_10px_rgba(217,70,239,0.5)]">
+        <span className="text-[11px] sm:text-sm font-semibold tracking-[0.22em] sm:tracking-[0.35em] uppercase text-fuchsia-300 -translate-y-1 sm:-translate-y-3 mb-2.5 sm:mb-5 drop-shadow-[0_0_10px_rgba(217,70,239,0.5)] whitespace-nowrap">
           Birigui • Moda Plus Size Ele &amp; Ela
         </span>
 
-        {/* Premium Frosted Glass Card Container with Dynamic Mouse-Sensitive Luminescence - Hugging Text */}
+        {/* Premium Frosted Glass Card Container from Reference Image - Fully Responsive */}
         <div
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="group relative w-fit max-w-[calc(100vw-2rem)] sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto overflow-hidden rounded-2xl sm:rounded-3xl md:rounded-[2rem] border border-white/15 bg-stone-950/35 backdrop-blur-[6px] px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 mb-5 sm:mb-7 lg:mb-8 shadow-[0_16px_50px_rgba(0,0,0,0.55)] transition-all duration-500 hover:border-white/30 hover:bg-stone-950/45 hover:shadow-[0_24px_65px_rgba(121,9,49,0.25)] inline-flex flex-col items-center justify-center text-center"
+          className="group relative w-fit max-w-[calc(100vw-1.5rem)] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto overflow-hidden rounded-[18px] sm:rounded-[26px] md:rounded-[32px] border border-white/15 bg-stone-950/40 backdrop-blur-md px-3.5 py-3.5 sm:px-8 sm:py-6 md:px-12 md:py-7 lg:px-14 lg:py-8 mb-4 sm:mb-6 lg:mb-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] transition-all duration-500 hover:border-white/25 hover:bg-stone-950/50 inline-flex flex-col items-center justify-center text-center"
         >
           {/* Subtle light streak top border */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-rose-200/40 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-rose-200/30 to-transparent" />
 
           {/* Mouse-Sensitive Spotlight Aura inside the Card */}
           <div
             className="pointer-events-none absolute inset-0 transition-opacity duration-500 ease-out"
             style={{
               background: mousePos.active
-                ? `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, rgba(244, 114, 182, 0.2), rgba(121, 9, 49, 0.1), transparent 75%)`
-                : `radial-gradient(300px circle at 50% 50%, rgba(244, 114, 182, 0.08), transparent 70%)`,
+                ? `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, rgba(244, 114, 182, 0.15), rgba(121, 9, 49, 0.08), transparent 75%)`
+                : `radial-gradient(300px circle at 50% 50%, rgba(244, 114, 182, 0.06), transparent 70%)`,
               opacity: mousePos.active ? 1 : 0.4,
             }}
           />
 
-          {/* H1 - High contrast editorial presentation with breathing float, thicker weight, solid colors */}
+          {/* H1 - Reference Style with Elegant Horizontal Gradient across Title Width and Interactive Word Hover */}
           <h1
-            className="relative z-10 font-semibold sm:font-bold tracking-tight leading-[1.32] sm:leading-[1.38] md:leading-[1.42] lg:leading-[1.36] [word-spacing:0.16em] sm:[word-spacing:0.22em] text-balance max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl animate-hero-float hero-text-stroke transition-all duration-300 select-none py-1"
+            className="relative z-10 font-outfit tracking-[-0.015em] text-center select-none py-0.5 w-full"
             style={{
-              fontSize: 'clamp(1.85rem, 3.8vw, 3.75rem)',
+              fontSize: 'clamp(1.15rem, 5.2vw, 3.65rem)',
+              lineHeight: 1.15,
+              background: 'linear-gradient(90deg, #ffffff 0%, #f7e7ec 45%, #f3a6bd 75%, #ff4f78 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              WebkitTextFillColor: 'transparent',
             }}
           >
-            {/* Word 1: Elegância */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-white hover:text-stone-100 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.7)] cursor-default">
-              Elegância
-            </span>{' '}
-            {/* Word 2: sem - Diamond Rose Quartz */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-stone-100 hover:text-[#ffe4e6] hover:drop-shadow-[0_0_20px_rgba(254,205,211,0.85)] cursor-default">
-              sem
-            </span>{' '}
-            {/* Word 3: regras - Velvet Bordeaux / Crimson */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-rose-100 hover:text-[#f43f5e] hover:drop-shadow-[0_0_24px_rgba(244,63,94,0.9)] cursor-default">
-              regras
-            </span>{' '}
-            {/* Word 4: de - Soft Amethyst Rose */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-stone-200 hover:text-[#f5d0fe] hover:drop-shadow-[0_0_20px_rgba(232,121,249,0.85)] cursor-default">
-              de
-            </span>{' '}
-            {/* Word 5: tamanho - Fuchsia Royale */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-white hover:text-[#e879f9] hover:drop-shadow-[0_0_26px_rgba(217,70,239,0.95)] cursor-default">
-              tamanho
-            </span>{' '}
-            {/* Word 6: e - Sunset Rose Gold */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-rose-200 hover:text-[#fb7185] hover:drop-shadow-[0_0_20px_rgba(251,113,133,0.85)] cursor-default">
-              e
-            </span>{' '}
-            {/* Word 7: proporções - Magenta to Orchid Solid */}
-            <span className="inline-block mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-rose-200 hover:text-[#d946ef] hover:drop-shadow-[0_0_26px_rgba(160,43,212,0.9)] cursor-default">
-              proporções
-            </span>{' '}
-            {/* Word 8: desenhadas - Radiant Rose Gold */}
-            <span className="inline-block italic font-semibold mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-rose-200 hover:text-[#f472b6] hover:drop-shadow-[0_0_24px_rgba(244,114,182,0.9)] cursor-default">
-              desenhadas
-            </span>{' '}
-            {/* Word 9: para - Pure Pearl Rose */}
-            <span className="inline-block italic font-semibold mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 text-rose-200/90 hover:text-[#fce7f3] hover:drop-shadow-[0_0_20px_rgba(244,114,182,0.8)] cursor-default">
-              para
-            </span>{' '}
-            {/* Word 10: você. - Signature Burgundy / Deep Velvet Rose */}
-            <span className="inline-block italic font-bold mx-0.5 sm:mx-1 my-0.5 sm:my-1 transition-all duration-300 ease-out hover:scale-[1.06] hover:-translate-y-0.5 text-[#fb7185] hover:text-[#e11d48] hover:drop-shadow-[0_0_28px_rgba(225,29,72,0.95)] cursor-default">
-              você.
+            {/* Linha 1: Elegância sem Regras */}
+            <span className="block whitespace-nowrap">
+              {/* Elegância */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#ffffff',
+                    WebkitTextFillColor: '#ffffff',
+                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.85)) drop-shadow(0 0 35px rgba(255,255,255,0.5))',
+                  }}
+                >
+                  Elegância
+                </span>
+                <span className="relative z-10 font-bold">
+                  Elegância
+                </span>
+              </span>{' '}
+
+              {/* sem */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
+                  style={{
+                    color: '#ffe4e6',
+                    WebkitTextFillColor: '#ffe4e6',
+                    filter: 'drop-shadow(0 0 20px rgba(254,205,211,0.85)) drop-shadow(0 0 30px rgba(254,205,211,0.5))',
+                  }}
+                >
+                  sem
+                </span>
+                <span className="relative z-10 font-normal">
+                  sem
+                </span>
+              </span>{' '}
+
+              {/* Regras */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#f43f5e',
+                    WebkitTextFillColor: '#f43f5e',
+                    filter: 'drop-shadow(0 0 24px rgba(244,63,94,0.95)) drop-shadow(0 0 36px rgba(244,63,94,0.6))',
+                  }}
+                >
+                  Regras
+                </span>
+                <span className="relative z-10 font-bold">
+                  Regras
+                </span>
+              </span>
+            </span>
+
+            {/* Linha 2: Tamanhos e Proporções */}
+            <span className="block whitespace-nowrap my-0.5 sm:my-1 md:my-1.5">
+              {/* Tamanhos */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#f472b6',
+                    WebkitTextFillColor: '#f472b6',
+                    filter: 'drop-shadow(0 0 22px rgba(244,114,182,0.9)) drop-shadow(0 0 35px rgba(244,114,182,0.5))',
+                  }}
+                >
+                  Tamanhos
+                </span>
+                <span className="relative z-10 font-bold">
+                  Tamanhos
+                </span>
+              </span>{' '}
+
+              {/* e */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
+                  style={{
+                    color: '#fb7185',
+                    WebkitTextFillColor: '#fb7185',
+                    filter: 'drop-shadow(0 0 20px rgba(251,113,133,0.85)) drop-shadow(0 0 30px rgba(251,113,133,0.5))',
+                  }}
+                >
+                  e
+                </span>
+                <span className="relative z-10 font-normal">
+                  e
+                </span>
+              </span>{' '}
+
+              {/* Proporções */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#e879f9',
+                    WebkitTextFillColor: '#e879f9',
+                    filter: 'drop-shadow(0 0 24px rgba(232,121,249,0.9)) drop-shadow(0 0 36px rgba(232,121,249,0.55))',
+                  }}
+                >
+                  Proporções
+                </span>
+                <span className="relative z-10 font-bold">
+                  Proporções
+                </span>
+              </span>
+            </span>
+
+            {/* Linha 3: Desenhadas para Você. */}
+            <span className="block whitespace-nowrap">
+              {/* Desenhadas */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#ffffff',
+                    WebkitTextFillColor: '#ffffff',
+                    filter: 'drop-shadow(0 0 22px rgba(255,255,255,0.85)) drop-shadow(0 0 35px rgba(255,255,255,0.5))',
+                  }}
+                >
+                  Desenhadas
+                </span>
+                <span className="relative z-10 font-bold">
+                  Desenhadas
+                </span>
+              </span>{' '}
+
+              {/* para */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
+                  style={{
+                    color: '#ffe4e6',
+                    WebkitTextFillColor: '#ffe4e6',
+                    filter: 'drop-shadow(0 0 20px rgba(254,205,211,0.85)) drop-shadow(0 0 30px rgba(254,205,211,0.5))',
+                  }}
+                >
+                  para
+                </span>
+                <span className="relative z-10 font-normal">
+                  para
+                </span>
+              </span>{' '}
+
+              {/* Você. */}
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.06] hover:-translate-y-0.5 cursor-default">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
+                  style={{
+                    color: '#ff4f78',
+                    WebkitTextFillColor: '#ff4f78',
+                    filter: 'drop-shadow(0 0 28px rgba(255,79,120,1)) drop-shadow(0 0 45px rgba(255,79,120,0.7))',
+                  }}
+                >
+                  Você.
+                </span>
+                <span className="relative z-10 font-bold">
+                  Você.
+                </span>
+              </span>
             </span>
           </h1>
         </div>
@@ -145,16 +281,16 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
 
         {/* Exactly Two High-Contrast CTAs - Compact and Elegant on Mobile with Haptic Feedback */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto px-4">
-          {/* CTA 1: High Contrast Light Button */}
+          {/* CTA 1: High Contrast Luxury Pearl & Silk Light Button */}
           <button
             onClick={() => {
               triggerHapticFeedback(15);
               onExploreCatalog();
             }}
-            className="w-[82%] max-w-[260px] sm:w-auto sm:max-w-none px-5 py-3 sm:px-9 sm:py-4 rounded-full bg-white hover:bg-stone-200 text-stone-950 text-xs sm:text-sm font-semibold tracking-wider uppercase transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center space-x-2"
+            className="btn-pearl-silk w-[82%] max-w-[260px] sm:w-auto sm:max-w-none px-6 py-3.5 sm:px-9 sm:py-4 rounded-full text-xs sm:text-sm font-bold tracking-wider uppercase cursor-pointer flex items-center justify-center space-x-2.5"
           >
-            <span>Ver Catálogo</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <span className="font-bold">Ver Catálogo</span>
+            <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </button>
 
           {/* CTA 2: High Contrast Accent Button (Pink/Purple with Luminescence Glow) */}

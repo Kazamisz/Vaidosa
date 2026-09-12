@@ -256,9 +256,11 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
             <button
               type="button"
               onClick={() => setVisibleCount(count => count + 16)}
-              className="rounded-full border border-white/15 bg-white px-7 py-3.5 text-sm font-semibold text-stone-950 transition-transform hover:scale-[1.02]"
+              className="btn-pearl-silk inline-flex items-center justify-center gap-2.5 rounded-full px-8 py-4 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
             >
-              Carregar mais peças ({visibleProducts.length} de {filteredProducts.length})
+              <span className="font-bold">
+                Carregar mais peças ({visibleProducts.length} de {filteredProducts.length})
+              </span>
             </button>
           </div>
         )}

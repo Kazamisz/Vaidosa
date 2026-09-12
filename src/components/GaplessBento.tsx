@@ -64,9 +64,10 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           </div>
           <button
             onClick={onExploreCatalog}
-            className="self-start md:self-end px-7 py-3.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] border border-purple-400/40"
+            className="btn-pearl-silk self-start md:self-end px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-bold cursor-pointer flex items-center gap-2"
           >
-            Explorar Catálogo Completo
+            <span className="font-bold">Explorar Catálogo Completo</span>
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </button>
         </div>
 
@@ -306,9 +307,10 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               </div>
               <button
                 onClick={onExploreCatalog}
-                className="px-5 py-2.5 rounded-full bg-white text-stone-950 hover:bg-stone-200 text-xs font-semibold tracking-wider transition-colors cursor-pointer"
+                className="btn-pearl-silk px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-1.5"
               >
-                Ver Coleção
+                <span className="font-bold">Ver Coleção</span>
+                <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </div>
           </div>

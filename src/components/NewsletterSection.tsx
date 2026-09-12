@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, Mail } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 import { triggerHapticFeedback } from '../utils/haptics';
 
 export const NewsletterSection: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
+    if (!phone || phone.trim().length < 8) return;
 
     triggerHapticFeedback([15, 30, 20]);
     setIsLoading(true);
@@ -17,7 +17,7 @@ export const NewsletterSection: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       setIsSubmitted(true);
-      setEmail('');
+      setPhone('');
     }, 600);
   };
 
@@ -44,24 +44,24 @@ export const NewsletterSection: React.FC = () => {
             </h2>
 
             <p className="mt-4 text-sm sm:text-base text-stone-300 font-light leading-relaxed">
-              Receba avisos de reposição de peças cobiçadas, novos cortes sob medida e convites para eventos exclusivos da Vaidosa Plus Size.
+              Receba avisos de reposição de peças cobiçadas, novos cortes sob medida e convites exclusivos via WhatsApp e SMS.
             </p>
 
             {isSubmitted ? (
               <div className="mt-8 flex flex-col items-center justify-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-950/40 p-6 text-center backdrop-blur-md">
                 <CheckCircle2 className="h-8 w-8 text-emerald-400 animate-bounce" />
                 <h3 className="text-base font-semibold text-emerald-200">
-                  Inscrição confirmada com elegância!
+                  Número cadastrado com elegância!
                 </h3>
                 <p className="text-xs text-stone-300 max-w-sm">
-                  Em breve você receberá nossos anúncios de lançamentos e novidades especiais diretamente na sua caixa de entrada.
+                  Em breve você receberá nossos avisos de lançamentos e novidades exclusivas diretamente no seu WhatsApp.
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsSubmitted(false)}
                   className="mt-2 text-xs text-rose-300 hover:text-rose-100 underline underline-offset-4 cursor-pointer"
                 >
-                  Cadastrar outro e-mail
+                  Cadastrar outro número
                 </button>
               </div>
             ) : (
@@ -69,13 +69,13 @@ export const NewsletterSection: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-lg mx-auto">
                   <div className="relative flex-1">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-stone-400">
-                      <Mail className="h-4 w-4" />
+                      <Phone className="h-4 w-4" />
                     </div>
                     <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Digite seu melhor e-mail..."
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="Digite seu número de WhatsApp..."
                       required
                       className="w-full rounded-full border border-white/20 bg-white/5 py-3.5 pl-11 pr-4 text-sm text-white placeholder-stone-400 backdrop-blur-md outline-none transition-all duration-300 focus:border-rose-400 focus:bg-white/10 focus:ring-2 focus:ring-rose-400/20 shadow-inner"
                     />

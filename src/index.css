@@ -279,7 +279,8 @@ html.lenis, html.lenis body {
 }
 
 @media (hover: hover) {
-  .catalog-product-card::before {
+  .catalog-product-card::before,
+  .premium-product-card::before {
     content: none;
   }
 
@@ -294,7 +295,8 @@ html.lenis, html.lenis body {
     transform: translateX(-115%);
   }
 
-  .catalog-product-card:hover .catalog-card-image::after {
+  .catalog-product-card:hover .catalog-card-image::after,
+  .premium-product-card:hover .catalog-card-image::after {
     opacity: 1;
     transform: translateX(115%);
     transition: transform 850ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms ease;
@@ -324,6 +326,77 @@ html.lenis, html.lenis body {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+}
+
+/* ==========================================================================
+   ACABAMENTO PÉROLA E SEDA (Pearl & Silk Luxury Button & Link Finish)
+   ========================================================================== */
+.btn-pearl-silk {
+  position: relative !important;
+  isolation: isolate !important;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF5ED 22%, #F6E7D8 50%, #FFF8F2 78%, #EED9C4 100%) !important;
+  color: #1a0f16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 1),
+    inset 0 -2px 6px rgba(185, 135, 105, 0.25),
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    0 0 25px rgba(87, 6, 34, 0.48),
+    0 0 12px rgba(255, 245, 235, 0.6) !important;
+  overflow: hidden !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-pearl-silk::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 25%,
+    rgba(255, 255, 255, 0.75) 48%,
+    rgba(255, 240, 248, 0.95) 50%,
+    rgba(255, 255, 255, 0.75) 52%,
+    rgba(255, 255, 255, 0) 75%,
+    transparent 100%
+  ) !important;
+  transform: translateX(-150%) skewX(-22deg) !important;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+.btn-pearl-silk:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F3 20%, #FAF0E6 48%, #FFFFFF 72%, #F3E4D3 100%) !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 
+    inset 0 1px 3px rgba(255, 255, 255, 1),
+    inset 0 -2px 6px rgba(185, 135, 105, 0.35),
+    0 14px 42px rgba(0, 0, 0, 0.52),
+    0 0 38px rgba(87, 6, 34, 0.72),
+    0 0 20px rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+.btn-pearl-silk:hover::before {
+  transform: translateX(150%) skewX(-22deg) !important;
+}
+
+.btn-pearl-silk:active {
+  transform: translateY(1px) scale(0.97) !important;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 22px rgba(87, 6, 34, 0.5) !important;
+}
+
+.btn-pearl-silk > * {
+  position: relative !important;
+  z-index: 6 !important;
 }
 
 

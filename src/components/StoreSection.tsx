@@ -123,10 +123,10 @@ export const StoreSection: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => triggerHapticFeedback(20)}
-                className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-stone-950 transition-all hover:bg-stone-200 hover:scale-[1.01] active:scale-95 shadow-xl"
+                className="btn-pearl-silk inline-flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
               >
-                <MessageCircle className="h-4 w-4 text-[#790931]" />
-                Conversar com a loja
+                <MessageCircle className="h-4 w-4 text-[#790931] transition-transform duration-300 group-hover:scale-110" />
+                <span className="font-bold">Conversar com a loja</span>
               </a>
             </div>
           </div>
