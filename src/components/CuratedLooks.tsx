@@ -65,8 +65,8 @@ export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectPr
   if (!curated.length) return null;
 
   return (
-    <section id="curadoria" ref={sectionRef} className="curated-ambient relative isolate overflow-hidden bg-[#10050a] py-20 text-white sm:py-24 md:py-32">
-      <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
+    <section id="curadoria" ref={sectionRef} className="curated-ambient relative isolate overflow-hidden bg-[#080307] py-14 text-white sm:py-16 md:py-20">
+      <DeferredRender order={2} className="absolute inset-0 canvas-seamless-mask" rootMargin="600px 0px">
         <Suspense fallback={null}>
           <Topography
             lowColor="#2e0310"
@@ -92,7 +92,10 @@ export const CuratedLooks: React.FC<CuratedLooksProps> = ({ products, onSelectPr
           />
         </Suspense>
       </DeferredRender>
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.12),rgba(16,5,10,.38))]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.12),rgba(8,3,7,.38))]" aria-hidden="true" />
+      {/* Seamless top and bottom feathering overlays */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 md:h-64 bg-gradient-to-b from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 md:h-64 bg-gradient-to-t from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-3xl sm:mb-16">

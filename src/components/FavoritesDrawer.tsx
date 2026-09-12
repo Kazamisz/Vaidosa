@@ -4,6 +4,7 @@ import { ArrowUpRight, MessageCircle, Minus, Plus, ShoppingBag, Sparkles, Trash2
 import { Produto, CartItem } from '../types';
 import { COMPANY } from '../data/company';
 import { getImageUrl } from '../utils/image';
+import { triggerHapticFeedback } from '../utils/haptics';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -181,13 +182,21 @@ export const FavoritesDrawer: React.FC<CartDrawerProps> = ({
                   href={`${COMPANY.whatsapp_url}?text=${encodeURIComponent(whatsappOrderMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-fuchsia-300/30 bg-gradient-to-r from-[#c255ef] via-[#a02bd4] to-[#790931] px-5 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_34px_rgba(121,9,49,.42)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_42px_rgba(194,85,239,.3)]"
+                  onClick={() => triggerHapticFeedback(25)}
+                  className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-fuchsia-300/30 bg-gradient-to-r from-[#c255ef] via-[#a02bd4] to-[#790931] px-5 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_34px_rgba(121,9,49,.42)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_42px_rgba(194,85,239,.3)] cursor-pointer"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Enviar pedido
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
-                <button type="button" onClick={onClearCart} className="mt-3 w-full py-1 text-xs text-stone-500 transition-colors hover:text-stone-300">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHapticFeedback(10);
+                    onClearCart();
+                  }}
+                  className="mt-3 w-full py-1 text-xs text-stone-500 transition-colors hover:text-stone-300 cursor-pointer"
+                >
                   Esvaziar carrinho
                 </button>
               </div>

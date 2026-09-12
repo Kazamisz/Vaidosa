@@ -26,13 +26,13 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl transition-all">
+    <header className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl xl:max-w-7xl transition-all">
       {/* Floating Glass Pill Navigation Bar */}
-      <div className="bg-stone-950/85 backdrop-blur-xl border border-stone-800/90 shadow-2xl rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between">
+      <div className="bg-stone-950/90 backdrop-blur-xl border border-stone-800/90 shadow-2xl rounded-full px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-2">
         {/* Brand Logo with Luminescent Soft Glow */}
         <button
           onClick={() => scrollTo('inicio')}
-          className="flex items-center space-x-2 group relative py-0.5 text-left cursor-pointer bg-transparent border-0 p-0"
+          className="flex items-center space-x-2 group relative py-0.5 text-left cursor-pointer bg-transparent border-0 p-0 shrink min-w-0"
           title="Ir para o Início"
         >
           <div className="relative flex items-center">
@@ -41,14 +41,14 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/images/logo-256.webp"
               alt={COMPANY.nome}
-              className="h-8 sm:h-9 w-auto max-w-[155px] sm:max-w-[185px] object-contain relative z-10 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_8px_rgba(217,70,239,0.35)] drop-shadow-[0_0_16px_rgba(168,85,247,0.2)]"
+              className="h-7 sm:h-9 w-auto max-w-[120px] sm:max-w-[185px] object-contain relative z-10 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_8px_rgba(217,70,239,0.35)] drop-shadow-[0_0_16px_rgba(168,85,247,0.2)]"
               loading="eager"
             />
           </div>
         </button>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center space-x-7 text-xs font-medium uppercase tracking-widest text-white">
+        <nav className="hidden lg:flex items-center space-x-7 text-xs font-medium uppercase tracking-widest text-white shrink-0">
           <button
             onClick={() => scrollTo('inicio')}
             className="relative group/navpy text-white hover:text-fuchsia-200 hover:drop-shadow-[0_0_16px_rgba(217,70,239,0.9)] hover:drop-shadow-[0_0_24px_rgba(168,85,247,0.6)] transition-all duration-300 cursor-pointer py-1"
@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           {/* Quick Search */}
           <button
             onClick={onSearchFocus}
@@ -113,10 +113,11 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
+          {/* Catálogo button (hidden on extra small screens to protect hamburger menu, prominent on tablet/desktop) */}
           <button
             type="button"
             onClick={() => scrollTo('catalogo')}
-            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-full border border-rose-200/30 bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_rgba(121,9,49,.48)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] hover:shadow-[0_12px_32px_rgba(121,9,49,.54)] sm:px-5 sm:text-xs"
+            className="hidden sm:inline-flex group relative items-center gap-1.5 overflow-hidden rounded-full border border-rose-200/30 bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_rgba(121,9,49,.48)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] hover:shadow-[0_12px_32px_rgba(121,9,49,.54)]"
             title="Abrir catálogo"
           >
             <span>Catálogo</span>
@@ -126,8 +127,8 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Hamburger Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full hover:bg-stone-800 text-stone-300 transition-colors cursor-pointer"
-            aria-label="Menu"
+            className="lg:hidden p-2 rounded-full bg-stone-900/60 border border-stone-800 hover:bg-stone-800 text-stone-200 transition-colors cursor-pointer shrink-0 flex items-center justify-center"
+            aria-label="Menu de Navegação"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

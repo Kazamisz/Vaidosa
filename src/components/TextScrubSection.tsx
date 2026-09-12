@@ -49,10 +49,10 @@ export const TextScrubSection: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden py-32 text-stone-100 md:py-48"
+      className="relative overflow-hidden py-16 text-stone-100 md:py-24"
     >
       <div
-        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.78),rgba(8,3,7,.78))]"
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.75)_0%,rgba(8,3,7,.85)_50%,transparent_100%)] pointer-events-none"
         aria-hidden="true"
       />
       <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">

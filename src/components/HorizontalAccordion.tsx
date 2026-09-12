@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
-import { getImageUrl } from '../utils/image';
+import { getImageUrl, getImageSrcSet } from '../utils/image';
 
 interface HorizontalAccordionProps {
   products: Produto[];
@@ -30,10 +30,10 @@ export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
   if (!items.length) return null;
 
   return (
-    <section className="relative isolate overflow-hidden py-20 text-stone-100 sm:py-24 md:py-32">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,3,7,.38),rgba(8,3,7,.78))]" aria-hidden="true" />
+    <section id="exploracao-tatil" className="relative py-14 sm:py-16 md:py-20 text-stone-100">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(8,3,7,.4)_35%,rgba(8,3,7,.75)_100%)] pointer-events-none" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl 2xl:max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col gap-6 text-left sm:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-rose-300">
@@ -69,10 +69,13 @@ export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
               >
                 <img
                   src={getImageUrl(item.imagens[0])}
+                  srcSet={getImageSrcSet(item.imagens[0])}
+                  sizes="(max-width: 1023px) 100vw, 35vw"
                   alt={item.titulo}
                   className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105 will-change-transform transform-gpu"
-                  loading="lazy"
-                  decoding="async"
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
                 />
                 {/* Fixed base dark overlay */}
                 <div className="absolute inset-0 bg-black/50 transition-opacity duration-300 ease-out" />

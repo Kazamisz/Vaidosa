@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, MapPin, ShieldAlert, ShoppingBag, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, ShoppingBag, X } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Produto } from '../types';
 import { getImageUrl } from '../utils/image';
+import { triggerHapticFeedback } from '../utils/haptics';
 
 interface ProductModalProps {
   product: Produto | null;
@@ -53,21 +55,32 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   const currentImage = getImageUrl(images[activeImageIndex] || '');
 
   return (
-    <div
+    <motion.div
       role="dialog"
       aria-modal="true"
       aria-labelledby="product-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/75 p-0 backdrop-blur-sm sm:p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24 }}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/80 p-0 backdrop-blur-md sm:p-4"
       onClick={onClose}
     >
-      <div
-        className="relative max-h-[100dvh] w-full overflow-hidden bg-[#12060c] text-left text-stone-100 shadow-[0_30px_100px_rgba(55,0,21,.6)] sm:max-h-[calc(100dvh-2rem)] sm:max-w-5xl sm:rounded-3xl sm:border sm:border-rose-200/20"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+        className="relative max-h-[100dvh] w-full overflow-hidden bg-[#12060c] text-left text-stone-100 shadow-[0_30px_100px_rgba(55,0,21,.75)] sm:max-h-[calc(100dvh-2rem)] sm:max-w-5xl sm:rounded-3xl sm:border sm:border-rose-200/25"
         onClick={event => event.stopPropagation()}
       >
         <button
           type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#210a14]/90 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105 hover:bg-[#3b0c20] sm:right-4 sm:top-4"
+          onClick={() => {
+            triggerHapticFeedback(10);
+            onClose();
+          }}
+          className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#210a14]/90 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105 hover:bg-[#3b0c20] cursor-pointer sm:right-4 sm:top-4"
           aria-label="Fechar janela"
         >
           <X className="h-5 w-5" />
@@ -164,12 +177,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                 {product.descricao_comercial || product.descricao_curta}
               </p>
 
-              {product.needs_review && (
-                <div className="flex items-start gap-2.5 rounded-2xl border border-amber-300/25 bg-amber-300/10 p-3.5 text-xs leading-relaxed text-amber-100">
-                  <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
-                  <p>Os detalhes visuais deste item devem ser confirmados diretamente com a equipe da loja.</p>
-                </div>
-              )}
+
 
               <div className="rounded-2xl border border-rose-200/15 bg-white/[0.045] p-4 text-sm text-stone-300">
                 <div className="flex items-center gap-2 font-semibold text-white">
@@ -183,8 +191,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
 
               <button
                 type="button"
-                onClick={() => onAddToCart(product.id)}
-                className="inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-rose-200/30 bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_14px_34px_rgba(121,9,49,.42)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] active:scale-[0.98]"
+                onClick={() => {
+                  triggerHapticFeedback([12, 40, 18]);
+                  onAddToCart(product.id);
+                }}
+                className="inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-rose-200/30 bg-gradient-to-r from-[#b52d62] via-[#8f123f] to-[#4e051e] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_14px_34px_rgba(121,9,49,.42)] transition-all duration-300 hover:-translate-y-0.5 hover:from-[#c93b70] hover:via-[#a51b4c] hover:to-[#630626] active:scale-[0.98] cursor-pointer"
               >
                 <ShoppingBag className="h-4 w-4" />
                 Adicionar ao carrinho
@@ -192,7 +203,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

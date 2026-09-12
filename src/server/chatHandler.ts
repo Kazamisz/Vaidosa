@@ -29,7 +29,7 @@ Catálogo: Este recorte conta com 140 produtos catalogados.
 
 const SYSTEM_INSTRUCTION = `Você é a consultora virtual da Vaidosa Plus Size Ele&Ela. Responda em português do Brasil, de forma acolhedora, direta, respeitosa e inclusiva. Use exclusivamente EMPRESA e PRODUTOS_RECUPERADOS como fontes factuais.
 
-Ajude a pessoa a encontrar itens por categoria, tipo de peça, cor e características visualmente descritas no catálogo. Faça no máximo duas perguntas por mensagem. Quando houver correspondência, recomende somente títulos e IDs reais recebidos no contexto.
+Ajude a pessoa a encontrar itens por categoria, tipo de peça, cor e características visualmente descritas no catálogo. Faça no máximo duas perguntas por mensagem. Quando houver correspondência, recomende peças somente por seus títulos comerciais elegantes. NUNCA mencione códigos, IDs internos, números de referência de sistema ou termos técnicos como "look-01", "ID", hashes ou chaves.
 
 Nunca invente preço, promoção, estoque, tamanho disponível, tecido, composição, marca, caimento corporal, medidas, forma de pagamento, entrega, troca, prazo ou disponibilidade. A descrição visual não confirma tecido, tamanho nem estoque. Não presuma gênero, corpo, estilo ou preferência da pessoa.
 
@@ -67,6 +67,17 @@ function searchCatalog(query: string) {
   return scored.filter(s => s.score > 0).slice(0, 8).map(s => s.product);
 }
 
+function sanitizeChatResponse(text: string): string {
+  if (!text) return '';
+  // Remove technical IDs like (DRBTkLVDNXO_01), (look-02), [ID: 123], etc.
+  return text
+    .replace(/\s*\([a-zA-Z0-9_-]{4,}\)/g, '')
+    .replace(/\s*\[(?:ID|id|código|ref)[:\s]*[a-zA-Z0-9_-]+\]/gi, '')
+    .replace(/\s*\((?:ID|id|código|ref)[:\s]*[a-zA-Z0-9_-]+\)/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 export async function handleChatMessage(message: string) {
   const trimmed = (message || '').trim().slice(0, 500);
   if (!trimmed) {
@@ -85,13 +96,13 @@ export async function handleChatMessage(message: string) {
     // Fallback when no API key configured
     let fallbackText = '';
     if (matched.length > 0) {
-      fallbackText = `Encontrei algumas opções no catálogo que podem combinar com o que você procura: ${matched.map(m => `"${m.titulo}" (${m.id})`).join(', ')}. `;
+      fallbackText = `Encontrei algumas opções no catálogo que podem combinar com o que você procura: ${matched.map(m => `"${m.titulo}"`).join(', ')}. `;
     } else {
       fallbackText = 'Não encontrei correspondência exata para essa busca em nosso catálogo atual. ';
     }
     fallbackText += 'Para confirmar tamanhos, cores disponíveis, valores e formas de pagamento, nossa equipe está pronta para te atender no WhatsApp: (18) 99649-2221.';
     return {
-      answer: fallbackText,
+      answer: sanitizeChatResponse(fallbackText),
       suggestedProductIds: matchedIds,
       requiresHumanConfirmation: true
     };
@@ -114,7 +125,7 @@ ${JSON.stringify(retrievedContext, null, 2)}
 MENSAGEM DO CLIENTE:
 "${trimmed}"
 
-Responda agora ao cliente seguindo estritamente as instruções de conduta. No final, se recomendar peças específicas, mencione seus títulos e IDs exatos.
+Responda agora ao cliente seguindo estritamente as instruções de conduta. Se recomendar peças específicas, mencione APENAS os títulos comerciais das peças de forma elegante e amigável. NUNCA inclua IDs, referências internas ou códigos de sistema no texto da sua resposta.
 `;
 
   // Candidate models for graceful fallback in case of high-demand spikes (HTTP 503 / 429)
@@ -140,10 +151,10 @@ Responda agora ao cliente seguindo estritamente as instruções de conduta. No f
         }
       });
 
-      const answer = response.text?.trim();
-      if (answer) {
+      const rawAnswer = response.text?.trim();
+      if (rawAnswer) {
         return {
-          answer,
+          answer: sanitizeChatResponse(rawAnswer),
           suggestedProductIds: matchedIds,
           requiresHumanConfirmation: false
         };
@@ -156,14 +167,14 @@ Responda agora ao cliente seguindo estritamente as instruções de conduta. No f
   // Graceful conversational catalog fallback if all models are experiencing high demand spikes
   let gracefulAnswer = '';
   if (matched.length > 0) {
-    gracefulAnswer = `Encontrei algumas opções em nosso catálogo visual que combinam com sua busca: ${matched.map(m => `"${m.titulo}" (${m.id})`).join(', ')}.`;
+    gracefulAnswer = `Encontrei algumas opções em nosso catálogo visual que combinam com sua busca: ${matched.map(m => `"${m.titulo}"`).join(', ')}.`;
   } else {
     gracefulAnswer = 'Não encontrei uma peça idêntica com essa descrição exata em nosso catálogo no momento.';
   }
   gracefulAnswer += '\n\nPara confirmar tamanhos (feminino até 70 e masculino até 80), valores e novas chegadas, fale diretamente com nossa equipe no WhatsApp: (18) 99649-2221.';
 
   return {
-    answer: gracefulAnswer,
+    answer: sanitizeChatResponse(gracefulAnswer),
     suggestedProductIds: matchedIds,
     requiresHumanConfirmation: true
   };

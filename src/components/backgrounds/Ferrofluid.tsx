@@ -196,14 +196,16 @@ export default function Ferrofluid({
     let gl: any = null;
     let program: any = null;
     let mesh: any = null;
+    const isMobile = isMobileDevice();
 
     try {
-      const isMobile = isMobileDevice();
-      const effectiveDpr = dpr ?? getWebGLDpr();
+      // Clamp DPR to ensure smooth 60fps page scrolling without GPU saturation on large displays
+      const baseDpr = dpr ?? getWebGLDpr();
+      const effectiveDpr = Math.min(baseDpr, isMobile ? 0.55 : 0.75);
       renderer = new Renderer({
         dpr: effectiveDpr,
         alpha: true,
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialias: false,
         powerPreference: 'high-performance'
       });
@@ -307,8 +309,15 @@ export default function Ferrofluid({
     let pageVisible = !document.hidden;
     let lastTime = 0;
     let lastRenderTime = 0;
+    const TARGET_FRAME_MS = isMobile ? 40 : 33.33; // 25-30 FPS cap for liquid background frees GPU overhead
+
     const loop = (time: number) => {
       frame = requestAnimationFrame(loop);
+      if (time - lastRenderTime < TARGET_FRAME_MS) {
+        return;
+      }
+      lastRenderTime = time;
+
       if (program.uniforms?.iTime) {
         program.uniforms.iTime.value = time * 0.001;
       }

@@ -8,23 +8,29 @@ import { TextScrubSection } from './components/TextScrubSection';
 import { CuratedLooks } from './components/CuratedLooks';
 import { CatalogSection } from './components/CatalogSection';
 import { StoreSection } from './components/StoreSection';
+import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
+import { ToastNotification } from './components/ToastNotification';
 import { PremiumWhatsAppIcon } from './components/PremiumWhatsAppIcon';
 import { PremiumCursor } from './components/PremiumCursor';
+import { ReadingProgress } from './components/ReadingProgress';
 import { DeferredRender } from './components/DeferredRender';
-import { FpsMonitor } from './components/FpsMonitor';
+import { InitialEntrance } from './components/InitialEntrance';
+import { initScrollReveal } from './utils/scrollReveal';
+import { triggerHapticFeedback } from './utils/haptics';
 import Lenis from 'lenis';
 import { Produto, CartItem } from './types';
 import { COMPANY } from './data/company';
 import { ANIMATION_FRAME_INTERVAL } from './utils/animation';
+import productsData from './data/products.json';
+import GhostFibers from './components/GhostFibers';
 
-const GhostFibers = lazy(() => import('./components/GhostFibers'));
 const ProductModal = lazy(() => import('./components/ProductModal').then(module => ({ default: module.ProductModal })));
 const ChatbotDrawer = lazy(() => import('./components/ChatbotDrawer').then(module => ({ default: module.ChatbotDrawer })));
 const FavoritesDrawer = lazy(() => import('./components/FavoritesDrawer').then(module => ({ default: module.FavoritesDrawer })));
 
 export default function App() {
-  const [products, setProducts] = useState<Produto[]>([]);
+  const [products, setProducts] = useState<Produto[]>(productsData as Produto[]);
   const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   
@@ -53,6 +59,8 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [hasOpenedChat, setHasOpenedChat] = useState(false);
   const [hasOpenedCart, setHasOpenedCart] = useState(false);
+  const [toast, setToast] = useState<{ id: string; product: Produto } | null>(null);
+  const [isInitialEntranceComplete, setIsInitialEntranceComplete] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -65,10 +73,12 @@ export default function App() {
   }, []);
 
   const openChat = () => {
+    triggerHapticFeedback(15);
     setHasOpenedChat(true);
     setIsChatOpen(true);
   };
   const openCart = () => {
+    triggerHapticFeedback(15);
     setHasOpenedCart(true);
     setIsCartOpen(true);
   };
@@ -102,6 +112,8 @@ export default function App() {
   }, [products]);
 
   // Lenis Smooth Scroll Engine
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.15,
@@ -109,6 +121,7 @@ export default function App() {
       smoothWheel: true,
       wheelMultiplier: 1.05,
     });
+    lenisRef.current = lenis;
 
     let rafId: number;
     function raf(time: number) {
@@ -120,8 +133,33 @@ export default function App() {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
+
+  // Lock page scroll and pause Lenis engine when chat, cart or product modal is open or during initial entrance
+  useEffect(() => {
+    if (!isInitialEntranceComplete || isChatOpen || isCartOpen || selectedProduct) {
+      lenisRef.current?.stop();
+      if (isChatOpen || isCartOpen || selectedProduct) {
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+      }
+    } else {
+      lenisRef.current?.start();
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+  }, [isInitialEntranceComplete, isChatOpen, isCartOpen, selectedProduct]);
+
+  // ScrollReveal Dynamic Reveal Engine for Off-Screen Elements (Zero collision with Catalog)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      initScrollReveal();
+    }, 120);
+
+    return () => clearTimeout(timer);
+  }, [products, isInitialEntranceComplete]);
 
   const handleSelectProduct = (product: Produto) => {
     setSelectedProduct(product);
@@ -143,6 +181,11 @@ export default function App() {
   };
 
   const handleAddToCart = (id: string) => {
+    triggerHapticFeedback([12, 40, 18]);
+    const prod = products.find(p => p.id === id);
+    if (prod) {
+      setToast({ id: String(Date.now()), product: prod });
+    }
     setCart(prev => {
       const exists = prev.find(item => item.id === id);
       if (exists) {
@@ -153,6 +196,7 @@ export default function App() {
   };
 
   const handleUpdateQuantity = (id: string, delta: number) => {
+    triggerHapticFeedback(12);
     setCart(prev => {
       return prev
         .map(item => {
@@ -167,6 +211,7 @@ export default function App() {
   };
 
   const handleRemoveFromCart = (id: string) => {
+    triggerHapticFeedback(15);
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
@@ -208,6 +253,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-stone-900 font-sans selection:bg-fuchsia-600 selection:text-white flex flex-col relative">
+      {/* Smooth Boutique Brand Initial Entrance Sequence */}
+      <InitialEntrance onComplete={() => setIsInitialEntranceComplete(true)} />
+
+      {/* Minimalist Top Reading Progress Bar */}
+      <ReadingProgress />
+
       {/* Editorial Boutique Custom Cursor */}
       <PremiumCursor />
 
@@ -238,21 +289,23 @@ export default function App() {
         />
 
         <div className="section-fusion relative isolate overflow-hidden bg-[#080307]">
-          <DeferredRender className="absolute inset-0" rootMargin="0px">
-            <Suspense fallback={null}>
-              <GhostFibers
-                lineColor="#790931"
-                glowColor="#a21548"
-                speed={0.15}
-                scale={2.2}
-                brightness={1.8}
-                blueBoost={1.1}
-                layers={3}
-                dpr={1}
-                fps={30}
-              />
-            </Suspense>
-          </DeferredRender>
+          <div className="absolute inset-0 canvas-seamless-mask">
+            <GhostFibers
+              lineColor="#790931"
+              glowColor="#a21548"
+              speed={0.15}
+              scale={2.2}
+              brightness={1.8}
+              blueBoost={1.1}
+              layers={3}
+              dpr={1}
+              fps={30}
+            />
+          </div>
+
+          {/* Seamless top and bottom feathering overlays */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-44 md:h-64 bg-gradient-to-b from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 md:h-64 bg-gradient-to-t from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />
 
           {/* COMPONENT ARSENAL: Horizontal Accordions */}
           <HorizontalAccordion
@@ -284,12 +337,22 @@ export default function App() {
 
         {/* PHYSICAL STORE: Architectural Location Chapter */}
         <StoreSection />
+
+        {/* NEWSLETTER: Exclusive Early Access & Product Drops */}
+        <NewsletterSection />
       </main>
 
       {/* ACTION: High-Contrast CTA Chapter and Clean Architectural Footer */}
       <Footer
         onOpenChat={openChat}
         onSelectCategory={handleCategorySelect}
+      />
+
+      {/* Global Shopping Cart Toast Notification */}
+      <ToastNotification
+        toast={toast}
+        onClose={() => setToast(null)}
+        onOpenCart={openCart}
       />
 
       {/* Product Details Modal with Gallery */}
@@ -329,18 +392,19 @@ export default function App() {
 
       {/* Floating Action Buttons Bottom Right */}
       <div className="fixed bottom-3 right-3 z-40 flex items-center gap-2 sm:bottom-6 sm:right-6 sm:gap-3.5">
-        {/* WhatsApp Direct Floating Trigger (Left) - Very subtle, discreet pulse */}
+        {/* WhatsApp Direct Floating Trigger (Left) with Luminescent Aura */}
         <a
           href={COMPANY.whatsapp_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_4px_18px_rgba(37,211,102,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] hover:shadow-[0_6px_24px_rgba(37,211,102,0.45)] active:scale-95 sm:h-14 sm:w-14"
+          onClick={() => triggerHapticFeedback(20)}
+          className="group relative flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_0_22px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] hover:shadow-[0_0_34px_rgba(37,211,102,0.9)] active:scale-95 sm:h-14 sm:w-14"
           title="Falar no WhatsApp da Loja"
           aria-label="Falar no WhatsApp da Loja"
         >
-          {/* Considerably reduced, soft ambient pulse */}
-          <span className="absolute inset-0 rounded-full bg-emerald-400/10 animate-pulse [animation-duration:5s] pointer-events-none" />
-          <PremiumWhatsAppIcon size={28} className="relative z-10 h-6 w-6 text-white sm:h-7 sm:w-7" glow={false} />
+          {/* Luminescent Aura */}
+          <span className="absolute inset-0 rounded-full bg-emerald-500/35 blur-md group-hover:bg-emerald-400/55 group-hover:blur-lg transition-all duration-300 pointer-events-none" />
+          <PremiumWhatsAppIcon size={28} className="relative z-10 h-6 w-6 text-white sm:h-7 sm:w-7 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]" glow />
         </a>
 
         {/* AI Consultant Floating Trigger (Right) - Sized to visually match WhatsApp circle */}
@@ -359,9 +423,6 @@ export default function App() {
           />
         </button>
       </div>
-
-      {/* Real-Time WebGL & Frametime Performance Benchmark HUD */}
-      <FpsMonitor />
     </div>
   );
 }
