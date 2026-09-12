@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { InfiniteMarquee } from './components/InfiniteMarquee';
@@ -30,6 +30,26 @@ const ChatbotDrawer = lazy(() => import('./components/ChatbotDrawer').then(modul
 const FavoritesDrawer = lazy(() => import('./components/FavoritesDrawer').then(module => ({ default: module.FavoritesDrawer })));
 
 export default function App() {
+  useLayoutEffect(() => {
+    const isReload = performance.getEntriesByType('navigation')[0] instanceof PerformanceNavigationTiming
+      && (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming).type === 'reload';
+
+    if (!isReload) return;
+
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    const resetAfterLoad = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    window.addEventListener('load', resetAfterLoad, { once: true });
+
+    return () => {
+      window.removeEventListener('load', resetAfterLoad);
+      window.history.scrollRestoration = previousRestoration;
+    };
+  }, []);
+
   const [products, setProducts] = useState<Produto[]>(productsData as Produto[]);
   const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');

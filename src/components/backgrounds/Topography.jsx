@@ -247,7 +247,10 @@ const Topography = ({
       const rect = container.getBoundingClientRect();
       const w = Math.max(1, Math.floor(rect.width));
       const h = Math.max(1, Math.floor(rect.height));
-      renderer.setSize(w, h);
+      const scale = Math.min(1, Math.sqrt(900000 / (w * h)) / renderer.dpr);
+      renderer.setSize(w * scale, h * scale);
+      gl.canvas.style.width = '100%';
+      gl.canvas.style.height = '100%';
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;
       res[1] = gl.drawingBufferHeight;

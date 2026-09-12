@@ -185,7 +185,10 @@ export default function DarkVeil({
       const h = parent.clientHeight || window.innerHeight || 600;
       if (w <= 0 || h <= 0) return;
       try {
-        renderer.setSize(w * effectiveResolutionScale, h * effectiveResolutionScale);
+        const scale = Math.min(effectiveResolutionScale, Math.sqrt(900000 / (w * h)) / renderer.dpr);
+        renderer.setSize(w * scale, h * scale);
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
         if (program.uniforms?.uResolution?.value) {
           program.uniforms.uResolution.value.set(gl.drawingBufferWidth, gl.drawingBufferHeight);
         }

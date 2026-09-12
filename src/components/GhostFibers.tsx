@@ -313,7 +313,10 @@ const GhostFibers = ({
 
     const setSize = () => {
       const rect = container.getBoundingClientRect();
-      renderer.setSize(Math.max(1, Math.floor(rect.width)), Math.max(1, Math.floor(rect.height)));
+      const renderHeight = Math.min(rect.height, Math.max(window.innerHeight * 1.25, 900));
+      renderer.setSize(Math.max(1, Math.floor(rect.width)), Math.max(1, Math.floor(renderHeight)));
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
       program.uniforms.uResolution.value[0] = gl.drawingBufferWidth;
       program.uniforms.uResolution.value[1] = gl.drawingBufferHeight;
       render();

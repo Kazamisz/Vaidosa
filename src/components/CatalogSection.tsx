@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useMemo, useState } from 'react';
 import { Eye, Filter, Search, ShoppingBag, Sparkles, X } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
 import { Produto } from '../types';
 import { getImageUrl } from '../utils/image';
 import { GLSLImageHover } from './GLSLImageHover';
@@ -30,7 +29,6 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(16);
-  const reduceMotion = useReducedMotion();
   const effectiveCategory = selectedCategory === 'Ambiente Comercial' ? 'Todos' : selectedCategory;
 
   const categories = useMemo(() => {
@@ -179,13 +177,9 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 min-[460px]:grid-cols-2 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
-            {visibleProducts.map((item, index) => (
-              <motion.div
+          {visibleProducts.map(item => (
+              <div
                 key={item.id}
-                initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.16 }}
-                transition={{ duration: 0.4, delay: Math.min(index * 0.025, 0.2) }}
                 onClick={() => onSelectProduct(item)}
                 onKeyDown={event => {
                   if (event.key === 'Enter' || event.key === ' ') onSelectProduct(item);
@@ -246,7 +240,7 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

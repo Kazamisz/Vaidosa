@@ -104,54 +104,21 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 1: Elegância sem Regras */}
             <span className="block whitespace-nowrap">
               {/* Elegância */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#ffffff',
-                    WebkitTextFillColor: '#ffffff',
-                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.85)) drop-shadow(0 0 35px rgba(255,255,255,0.5))',
-                  }}
-                >
-                  Elegância
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Elegância
                 </span>
               </span>{' '}
 
               {/* sem */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
-                  style={{
-                    color: '#ffe4e6',
-                    WebkitTextFillColor: '#ffe4e6',
-                    filter: 'drop-shadow(0 0 20px rgba(254,205,211,0.85)) drop-shadow(0 0 30px rgba(254,205,211,0.5))',
-                  }}
-                >
-                  sem
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-normal">
                   sem
                 </span>
               </span>{' '}
 
               {/* Regras */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#f43f5e',
-                    WebkitTextFillColor: '#f43f5e',
-                    filter: 'drop-shadow(0 0 24px rgba(244,63,94,0.95)) drop-shadow(0 0 36px rgba(244,63,94,0.6))',
-                  }}
-                >
-                  Regras
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Regras
                 </span>
@@ -161,54 +128,21 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 2: Tamanhos e Proporções */}
             <span className="block whitespace-nowrap my-0.5 sm:my-1 md:my-1.5">
               {/* Tamanhos */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#f472b6',
-                    WebkitTextFillColor: '#f472b6',
-                    filter: 'drop-shadow(0 0 22px rgba(244,114,182,0.9)) drop-shadow(0 0 35px rgba(244,114,182,0.5))',
-                  }}
-                >
-                  Tamanhos
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Tamanhos
                 </span>
               </span>{' '}
 
               {/* e */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
-                  style={{
-                    color: '#fb7185',
-                    WebkitTextFillColor: '#fb7185',
-                    filter: 'drop-shadow(0 0 20px rgba(251,113,133,0.85)) drop-shadow(0 0 30px rgba(251,113,133,0.5))',
-                  }}
-                >
-                  e
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-normal">
                   e
                 </span>
               </span>{' '}
 
               {/* Proporções */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#e879f9',
-                    WebkitTextFillColor: '#e879f9',
-                    filter: 'drop-shadow(0 0 24px rgba(232,121,249,0.9)) drop-shadow(0 0 36px rgba(232,121,249,0.55))',
-                  }}
-                >
-                  Proporções
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Proporções
                 </span>
@@ -218,54 +152,21 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 3: Desenhadas para Você. */}
             <span className="block whitespace-nowrap">
               {/* Desenhadas */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#ffffff',
-                    WebkitTextFillColor: '#ffffff',
-                    filter: 'drop-shadow(0 0 22px rgba(255,255,255,0.85)) drop-shadow(0 0 35px rgba(255,255,255,0.5))',
-                  }}
-                >
-                  Desenhadas
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Desenhadas
                 </span>
               </span>{' '}
 
               {/* para */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.04] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-normal"
-                  style={{
-                    color: '#ffe4e6',
-                    WebkitTextFillColor: '#ffe4e6',
-                    filter: 'drop-shadow(0 0 20px rgba(254,205,211,0.85)) drop-shadow(0 0 30px rgba(254,205,211,0.5))',
-                  }}
-                >
-                  para
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-normal">
                   para
                 </span>
               </span>{' '}
 
               {/* Você. */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-all duration-300 ease-out hover:scale-[1.06] hover:-translate-y-0.5 cursor-default">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 select-none opacity-0 transition-opacity duration-300 ease-out group-hover/word:opacity-100 font-bold"
-                  style={{
-                    color: '#ff4f78',
-                    WebkitTextFillColor: '#ff4f78',
-                    filter: 'drop-shadow(0 0 28px rgba(255,79,120,1)) drop-shadow(0 0 45px rgba(255,79,120,0.7))',
-                  }}
-                >
-                  Você.
-                </span>
+              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
                 <span className="relative z-10 font-bold">
                   Você.
                 </span>

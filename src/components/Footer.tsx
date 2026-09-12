@@ -97,9 +97,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => triggerHapticFeedback(20)}
-              className="group relative w-full px-10 py-4.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 font-semibold text-xs tracking-widest uppercase transition-all shadow-[0_0_24px_rgba(37,211,102,0.38)] hover:shadow-[0_0_36px_rgba(37,211,102,0.65)] hover:scale-105 active:scale-95 flex items-center justify-center space-x-2.5 cursor-pointer lg:flex-1"
+              className="group relative w-full px-10 py-4.5 rounded-full bg-white hover:bg-stone-200 text-stone-950 font-semibold text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center justify-center space-x-2.5 cursor-pointer lg:flex-1"
             >
-              <span className="absolute inset-0 rounded-full bg-emerald-400/20 blur-md group-hover:bg-emerald-400/35 transition-all pointer-events-none" />
               <PremiumWhatsAppIcon size={20} className="w-5 h-5 relative z-10 text-[#128C7E] drop-shadow-[0_0_8px_rgba(37,211,102,0.8)]" glow />
               <span className="relative z-10">Chamar no WhatsApp</span>
             </a>
@@ -179,10 +178,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => triggerHapticFeedback(15)}
-                className="group relative p-3 rounded-full bg-stone-900 hover:bg-stone-800 text-emerald-400 hover:text-emerald-300 transition-all border border-emerald-500/30 flex items-center justify-center shadow-[0_0_16px_rgba(37,211,102,0.4)] hover:shadow-[0_0_24px_rgba(37,211,102,0.75)] hover:scale-105"
+                className="group relative p-3 rounded-full bg-stone-900 hover:bg-stone-800 text-emerald-400 hover:text-emerald-300 transition-colors border border-stone-800 flex items-center justify-center shadow-[0_0_12px_rgba(37,211,102,0.2)]"
                 aria-label="WhatsApp"
               >
-                <span className="absolute inset-0 rounded-full bg-emerald-500/20 blur-sm group-hover:bg-emerald-500/40 transition-opacity pointer-events-none" />
                 <PremiumWhatsAppIcon size={18} className="w-4 h-4 relative z-10 drop-shadow-[0_0_6px_rgba(37,211,102,0.8)]" />
               </a>
             </div>

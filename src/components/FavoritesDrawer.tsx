@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowUpRight, MessageCircle, Minus, Plus, ShoppingBag, Sparkles, Trash2, X } from 'lucide-react';
+import { ArrowUpRight, Gem, MessageCircle, Minus, Plus, Trash2, X } from 'lucide-react';
 import { Produto, CartItem } from '../types';
 import { COMPANY } from '../data/company';
 import { getImageUrl } from '../utils/image';
@@ -76,8 +76,8 @@ export const FavoritesDrawer: React.FC<CartDrawerProps> = ({
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(180,39,99,.26),transparent_48%)]" />
               <div className="relative flex items-center justify-between gap-4">
                 <div className="flex min-w-0 items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-rose-200/20 bg-[#790931] shadow-[0_0_24px_rgba(121,9,49,.42)]">
-                    <ShoppingBag className="h-5 w-5" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-rose-200/30 bg-gradient-to-br from-[#a5164d] via-[#790931] to-[#3c0618] text-rose-100 shadow-[inset_0_1px_0_rgba(255,255,255,.18),0_10px_28px_rgba(121,9,49,.34)]">
+                    <Gem className="h-5 w-5 stroke-[1.6]" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-300">Seleção pessoal</p>
@@ -105,10 +105,7 @@ export const FavoritesDrawer: React.FC<CartDrawerProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   className="flex min-h-full flex-col items-center justify-center px-5 py-14 text-center"
                 >
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-rose-300/20 bg-[#790931]/20 text-rose-300">
-                    <Sparkles className="h-7 w-7" />
-                  </div>
-                  <h4 className="mt-5 text-xl font-medium text-white">Sua seleção começa aqui</h4>
+                  <h4 className="text-xl font-medium text-white">Sua seleção começa aqui</h4>
                   <p className="mt-2 max-w-xs text-sm leading-relaxed text-stone-400">
                     Adicione as peças que deseja consultar e envie tudo diretamente para a equipe da loja.
                   </p>

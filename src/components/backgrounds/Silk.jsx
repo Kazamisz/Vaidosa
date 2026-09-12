@@ -164,7 +164,12 @@ const Silk = ({
     const resize = () => {
       try {
         const { width, height } = container.getBoundingClientRect();
-        renderer.setSize(Math.max(1, width), Math.max(1, height));
+        const w = Math.max(1, width);
+        const h = Math.max(1, height);
+        const scale = Math.min(1, Math.sqrt(900000 / (w * h)) / renderer.dpr);
+        renderer.setSize(w * scale, h * scale);
+        gl.canvas.style.width = '100%';
+        gl.canvas.style.height = '100%';
         safeRender();
       } catch {}
     };
@@ -175,6 +180,7 @@ const Silk = ({
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame = 0;
     let lastRenderTime = 0;
+    const frameInterval = 1000 / 30;
     let visible = false;
     let pageVisible = !document.hidden;
 
@@ -188,7 +194,10 @@ const Silk = ({
     const loop = time => {
       frame = 0;
       if (!canAnimate()) return;
-      renderFrame(time);
+      if (time - lastRenderTime >= frameInterval) {
+        renderFrame(time);
+        lastRenderTime = time;
+      }
       frame = requestAnimationFrame(loop);
     };
     const canvasId = 'silk_' + Math.random().toString(36).substring(2, 7);
