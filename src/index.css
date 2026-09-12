@@ -1,5 +1,41 @@
 @import "tailwindcss";
 
+/* Extend the existing background, not a duplicate canvas, across the seam.
+   Content remains in its original layout and outside the background mask. */
+.section-fusion,
+#curadoria,
+#catalogo {
+  --section-fusion-depth: clamp(80px, 12vw, 180px);
+  overflow: visible;
+}
+
+.section-fusion > .absolute:first-child,
+#curadoria > .absolute:first-child,
+#catalogo > .absolute:first-child {
+  top: calc(-1 * var(--section-fusion-depth));
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0,
+    rgba(0, 0, 0, .08) calc(var(--section-fusion-depth) * .15),
+    rgba(0, 0, 0, .35) calc(var(--section-fusion-depth) * .45),
+    rgba(0, 0, 0, .75) calc(var(--section-fusion-depth) * .75),
+    #000 var(--section-fusion-depth));
+  mask-image: linear-gradient(to bottom,
+    transparent 0,
+    rgba(0, 0, 0, .08) calc(var(--section-fusion-depth) * .15),
+    rgba(0, 0, 0, .35) calc(var(--section-fusion-depth) * .45),
+    rgba(0, 0, 0, .75) calc(var(--section-fusion-depth) * .75),
+    #000 var(--section-fusion-depth));
+}
+
+@supports not (mask-image: linear-gradient(transparent, black)) {
+  .section-fusion > .absolute:first-child,
+  #curadoria > .absolute:first-child,
+  #catalogo > .absolute:first-child {
+    top: 0;
+  }
+}
+
 @theme {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-outfit: 'Outfit', sans-serif;

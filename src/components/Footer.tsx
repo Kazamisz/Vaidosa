@@ -21,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
   };
 
   return (
-    <footer className="relative isolate overflow-hidden bg-[#47041B] text-left text-stone-300 border-t border-rose-900/30">
+    <footer className="relative isolate overflow-hidden bg-[linear-gradient(145deg,#090205_0%,#260611_46%,#47041B_100%)] text-left text-stone-300 border-t border-rose-900/30">
       <DeferredRender className="pointer-events-none absolute inset-0 z-0" rootMargin="300px 0px">
         <div className="absolute inset-0" style={{ transform: 'scaleY(-1)' }} aria-hidden="true">
           <Suspense fallback={<div className="darkveil-fallback" />}>
@@ -34,10 +34,18 @@ export const Footer: React.FC<FooterProps> = ({ onOpenChat, onSelectCategory }) 
               warpAmount={0.16}
               resolutionScale={0.85}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#47041B]/70 via-transparent to-[#47041B]/90" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#090205]/75 via-transparent to-[#090205]/80" />
           </Suspense>
         </div>
       </DeferredRender>
+      <div
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          background:
+            'radial-gradient(ellipse at 14% 4%, rgba(239, 135, 170, 0.20), transparent 34%), radial-gradient(ellipse at 88% 76%, rgba(169, 41, 90, 0.26), transparent 38%), linear-gradient(118deg, rgba(9, 2, 5, 0.46) 0%, rgba(71, 4, 27, 0.08) 48%, rgba(9, 2, 5, 0.62) 100%)',
+        }}
+        aria-hidden="true"
+      />
       <div
         className="pointer-events-none absolute inset-0 -z-10 opacity-30 bg-[linear-gradient(115deg,transparent_20%,rgba(246,202,217,0.08)_48%,transparent_72%)]"
         aria-hidden="true"

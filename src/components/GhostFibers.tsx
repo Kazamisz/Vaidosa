@@ -188,11 +188,11 @@ const GhostFibers = ({
 
     try {
       const isMobile = isMobileDevice();
-      const effectiveDpr = getWebGLDpr();
+      const effectiveDpr = Math.min(getWebGLDpr(), Math.max(dpr, 0.75));
       renderer = new Renderer({
         alpha: true,
         premultipliedAlpha: true,
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         antialias: false,
         dpr: effectiveDpr,
         powerPreference: 'high-performance'
@@ -262,7 +262,7 @@ const GhostFibers = ({
     let frameId = 0;
     let elapsed = 0;
     let previousTime = performance.now();
-    let lastRenderTime = 0;
+    let lastRenderTime = -Infinity;
     let frameRate = ANIMATION_FPS;
     let isPaused = false;
     let isVisible = false;
@@ -295,8 +295,11 @@ const GhostFibers = ({
       previousTime = now;
       elapsed += delta;
 
-      program.uniforms.uTime.value = elapsed;
-      render();
+      if (now - lastRenderTime >= 1000 / frameRate) {
+        program.uniforms.uTime.value = elapsed;
+        render();
+        lastRenderTime = now;
+      }
 
       frameId = requestAnimationFrame(loop);
     };

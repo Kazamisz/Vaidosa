@@ -237,8 +237,8 @@ export default function App() {
           onExploreCatalog={handleExploreCatalog}
         />
 
-        <div className="relative isolate overflow-hidden bg-[#080307]">
-          <DeferredRender className="absolute inset-0" rootMargin="300px 0px">
+        <div className="section-fusion relative isolate overflow-hidden bg-[#080307]">
+          <DeferredRender className="absolute inset-0" rootMargin="0px">
             <Suspense fallback={null}>
               <GhostFibers
                 lineColor="#790931"
@@ -247,6 +247,9 @@ export default function App() {
                 scale={2.2}
                 brightness={1.8}
                 blueBoost={1.1}
+                layers={3}
+                dpr={1}
+                fps={30}
               />
             </Suspense>
           </DeferredRender>
