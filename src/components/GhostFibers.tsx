@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useHardware } from '../context/HardwareContext';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 import './GhostFibers.css';
 import { ANIMATION_FPS, getWebGLDpr, isMobileDevice, webGLTracker } from '../utils/animation';
@@ -175,6 +176,7 @@ const GhostFibers = ({
   className = ''
 }) => {
   const containerRef = useRef(null);
+  const hardware = useHardware();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -379,7 +381,7 @@ const GhostFibers = ({
       contexts.delete(container);
       if (canvas && canvas.parentNode === container) container.removeChild(canvas);
     };
-  }, [dpr]);
+  }, [dpr, hardware.recommendedDpr]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -394,7 +396,7 @@ const GhostFibers = ({
     uniforms.uScale.value = scale;
     uniforms.uRotation.value = rotation;
     uniforms.uRotationSpeed.value = rotationSpeed;
-    uniforms.uLayers.value = Math.min(Math.max(Math.round(layers), 1), 10);
+    uniforms.uLayers.value = Math.min(Math.max(Math.round(layers), 1), hardware.isLowEnd ? 1 : hardware.tier === 2 ? 2 : 4);
     uniforms.uWaveAmplitude.value = waveAmplitude;
     uniforms.uWaveFrequency.value = waveFrequency;
     uniforms.uWaveSpeed.value = waveSpeed;
@@ -412,7 +414,7 @@ const GhostFibers = ({
     uniforms.uVignette.value = vignette;
     uniforms.uGrain.value = grain;
     uniforms.uLightMode.value = lightMode ? 1 : 0;
-    context.setFps(fps);
+    context.setFps(Math.min(fps, hardware.fps));
     context.setPaused(paused);
     context.render();
   }, [
@@ -441,6 +443,7 @@ const GhostFibers = ({
     grain,
     lightMode,
     fps,
+    hardware,
     paused,
     dpr
   ]);

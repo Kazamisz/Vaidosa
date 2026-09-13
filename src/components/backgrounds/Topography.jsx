@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { getWebGLDpr } from '../../utils/animation';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './Topography.css';
 
@@ -191,7 +192,7 @@ const Topography = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: getWebGLDpr()
     });
 
     const gl = renderer.gl;

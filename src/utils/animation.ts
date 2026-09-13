@@ -3,6 +3,7 @@
  * Enforces strict 60 FPS mobile ceilings, adaptive DPR scaling, and idle-canvas management.
  */
 
+import { getHardwareSnapshot } from '../services/hardwareDetection';
 // Device detection & capability heuristics
 export const isMobileDevice = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -27,9 +28,7 @@ export const MAX_MOBILE_DPR = 1.0;
 
 export const getWebGLDpr = (): number => {
   if (typeof window === 'undefined') return 1;
-  const rawDpr = window.devicePixelRatio || 1;
-  const maxDpr = isMobileDevice() ? MAX_MOBILE_DPR : MAX_DESKTOP_DPR;
-  return Math.min(Math.max(rawDpr, 0.75), maxDpr);
+  return getHardwareSnapshot().recommendedDpr;
 };
 
 // Target frame-rates & frame-budget helpers (Strict 60 FPS lock)

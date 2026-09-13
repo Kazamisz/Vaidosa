@@ -8,7 +8,6 @@ import { TextScrubSection } from './components/TextScrubSection';
 import { CuratedLooks } from './components/CuratedLooks';
 import { CatalogSection } from './components/CatalogSection';
 import { StoreSection } from './components/StoreSection';
-import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
 import { PremiumWhatsAppIcon } from './components/PremiumWhatsAppIcon';
@@ -357,8 +356,6 @@ export default function App() {
         {/* PHYSICAL STORE: Architectural Location Chapter */}
         <StoreSection />
 
-        {/* NEWSLETTER: Exclusive Early Access & Product Drops */}
-        <NewsletterSection />
       </main>
 
       {/* ACTION: High-Contrast CTA Chapter and Clean Architectural Footer */}

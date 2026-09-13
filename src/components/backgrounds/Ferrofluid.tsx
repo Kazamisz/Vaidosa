@@ -200,8 +200,8 @@ export default function Ferrofluid({
 
     try {
       // Clamp DPR to ensure smooth 60fps page scrolling without GPU saturation on large displays
-      const baseDpr = dpr ?? getWebGLDpr();
-      const effectiveDpr = Math.min(baseDpr, isMobile ? 0.55 : 0.75);
+      const baseDpr = Math.min(dpr ?? getWebGLDpr(), getWebGLDpr());
+      const effectiveDpr = baseDpr;
       renderer = new Renderer({
         dpr: effectiveDpr,
         alpha: true,

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 import { ANIMATION_FRAME_INTERVAL, getWebGLDpr, webGLTracker } from '../../utils/animation';
+import { getHardwareSnapshot } from '../../services/hardwareDetection';
 
 const hexToNormalizedRGB = hex => {
   const value = hex.replace('#', '');
@@ -180,7 +181,7 @@ const Silk = ({
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame = 0;
     let lastRenderTime = 0;
-    const frameInterval = 1000 / 30;
+    const frameInterval = 1000 / getHardwareSnapshot().fps;
     let visible = false;
     let pageVisible = !document.hidden;
 
