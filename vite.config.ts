@@ -103,6 +103,20 @@ function aistudioMediaPlugin(): Plugin {
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss(), aistudioMediaPlugin(), chatApiPlugin()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('/node_modules/')) {
+              if (id.includes('/motion/') || id.includes('/framer-motion/') || id.includes('/motion-dom/') || id.includes('/motion-utils/')) return 'motion';
+              if (id.includes('/gsap/')) return 'gsap';
+              if (id.includes('/ogl/')) return 'webgl';
+            }
+            if (id.endsWith('/src/data/products.json')) return 'catalog-data';
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

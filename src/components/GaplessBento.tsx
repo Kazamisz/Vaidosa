@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Produto } from '../types';
 import { getImageSrcSet, getImageUrl } from '../utils/image';
-import Ferrofluid from './backgrounds/Ferrofluid';
+import { DeferredRender } from './DeferredRender';
+const Ferrofluid = lazy(() => import('./backgrounds/Ferrofluid'));
 
 interface GaplessBentoProps {
   products: Produto[];
@@ -34,7 +35,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
     <section id="bento" className="py-16 md:py-24 bg-[#080307] relative overflow-hidden text-white">
       {/* Dynamic Ferrofluid WebGL Background - loaded and active from initial render */}
       <div className="absolute inset-0 z-0 canvas-mask-bottom" aria-hidden="true">
-        <Ferrofluid
+        <DeferredRender className="absolute inset-0"><Suspense fallback={null}><Ferrofluid
           colors={['#4a0018', '#790931', '#b3124d', '#ef87aa']}
           backgroundColor="#080307"
           speed={0.075}
@@ -47,7 +48,7 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
           flowDirection="up"
           opacity={0.92}
           mouseInteraction={false}
-        />
+        /></Suspense></DeferredRender>
       </div>
       {/* Bottom seamless blend into next section */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 md:h-64 bg-gradient-to-t from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />
@@ -85,9 +86,9 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 1023px) 100vw, 67vw"
               alt={heroItem.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top sm:object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
-              fetchPriority="high"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="auto"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
             <div className="absolute inset-0 p-8 sm:p-10 flex flex-col justify-between">
@@ -125,8 +126,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item2.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -157,8 +158,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item3.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -189,8 +190,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item4.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -216,8 +217,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
               alt={item5.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -243,8 +244,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 1023px) 100vw, 33vw"
               alt={item6.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
@@ -270,8 +271,8 @@ export const GaplessBento: React.FC<GaplessBentoProps> = ({
               sizes="(max-width: 1023px) 100vw, 58vw"
               alt={item7.titulo}
               className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
-              decoding="sync"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
             <div className="absolute inset-0 p-8 flex flex-col justify-between">

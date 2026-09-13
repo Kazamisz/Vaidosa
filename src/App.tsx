@@ -23,7 +23,7 @@ import { Produto, CartItem } from './types';
 import { COMPANY } from './data/company';
 import { ANIMATION_FRAME_INTERVAL } from './utils/animation';
 import productsData from './data/products.json';
-import GhostFibers from './components/GhostFibers';
+const GhostFibers = lazy(() => import('./components/GhostFibers'));
 
 const ProductModal = lazy(() => import('./components/ProductModal').then(module => ({ default: module.ProductModal })));
 const ChatbotDrawer = lazy(() => import('./components/ChatbotDrawer').then(module => ({ default: module.ChatbotDrawer })));
@@ -50,7 +50,7 @@ export default function App() {
     };
   }, []);
 
-  const [products, setProducts] = useState<Produto[]>(productsData as Produto[]);
+  const products = productsData as Produto[];
   const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   
@@ -82,15 +82,6 @@ export default function App() {
   const [toast, setToast] = useState<{ id: string; product: Produto } | null>(null);
   const [isInitialEntranceComplete, setIsInitialEntranceComplete] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    import('./data/products.json').then(module => {
-      if (active) setProducts(module.default as Produto[]);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const openChat = () => {
     triggerHapticFeedback(15);
@@ -133,6 +124,7 @@ export default function App() {
 
   // Lenis Smooth Scroll Engine
   const lenisRef = useRef<Lenis | null>(null);
+  const reloadPositionReset = useRef(false);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -166,6 +158,13 @@ export default function App() {
         document.documentElement.style.overflow = 'hidden';
       }
     } else {
+      if (!reloadPositionReset.current && performance.getEntriesByType('navigation')[0]?.entryType === 'navigation') {
+        reloadPositionReset.current = true;
+        if ((performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming).type === 'reload') {
+          lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
+      }
       lenisRef.current?.start();
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
@@ -309,8 +308,8 @@ export default function App() {
         />
 
         <div className="section-fusion relative isolate overflow-hidden bg-[#080307]">
-          <div className="absolute inset-0 canvas-seamless-mask">
-            <GhostFibers
+          <DeferredRender className="absolute inset-0 canvas-seamless-mask">
+            <Suspense fallback={null}><GhostFibers
               lineColor="#790931"
               glowColor="#a21548"
               speed={0.15}
@@ -320,8 +319,8 @@ export default function App() {
               layers={3}
               dpr={1}
               fps={30}
-            />
-          </div>
+            /></Suspense>
+          </DeferredRender>
 
           {/* Seamless top and bottom feathering overlays */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-44 md:h-64 bg-gradient-to-b from-[#080307] via-[#080307]/85 to-transparent z-[1]" aria-hidden="true" />

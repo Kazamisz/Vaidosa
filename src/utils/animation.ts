@@ -103,9 +103,7 @@ export const setupGlobal60FpsLimit = (targetFps: number = 60) => {
 };
 
 // Automatically enforce 60 FPS on initialization
-if (typeof window !== 'undefined') {
-  setupGlobal60FpsLimit(60);
-}
+// Native RAF keeps input and animation scheduling aligned with browser frames.
 
 // Active WebGL Context Registry (prevents exceeding mobile context limits)
 class WebGLContextTracker {

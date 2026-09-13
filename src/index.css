@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Lower mobile compositing cost without changing layout or typography. */
+@media (max-width: 767px), (pointer: coarse) {
+  .hero-glass-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(12, 7, 10, 0.88);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  #inicio .animate-pulse { animation: none; }
+}
+
 /* Seamless background blending utilities for WebGL canvases */
 .canvas-seamless-mask {
   -webkit-mask-image: linear-gradient(to bottom,
@@ -400,3 +411,18 @@ html.lenis, html.lenis body {
 }
 
 
+/* Premium word accents in the hero headline. */
+.hero-premium-word { --premium-word-color: #f3a6bd; --premium-word-glow: rgba(243, 166, 189, 0.5); position: relative; transition: color 320ms ease, text-shadow 320ms ease; }
+.hero-premium-word:hover { color: var(--premium-word-color); -webkit-text-fill-color: var(--premium-word-color); text-shadow: 0 0 10px var(--premium-word-glow), 0 0 24px var(--premium-word-glow); }
+.hero-premium-word--gold { --premium-word-color: #e8c46a; --premium-word-glow: rgba(232, 196, 106, 0.42); }
+.hero-premium-word--red { --premium-word-color: #d72f4c; --premium-word-glow: rgba(215, 47, 76, 0.48); }
+.hero-premium-word--deep-rose { --premium-word-color: #a92f61; --premium-word-glow: rgba(169, 47, 97, 0.48); }
+.hero-premium-word--violet { --premium-word-color: #8f5bd7; --premium-word-glow: rgba(143, 91, 215, 0.48); }
+.hero-premium-word--purple { --premium-word-color: #6f3aae; --premium-word-glow: rgba(111, 58, 174, 0.5); }
+.hero-you-stroke { position: absolute; z-index: 20; display: block; pointer-events: none; border-radius: 999px; background: #e18dea; box-shadow: 0 1px 5px rgba(225, 141, 234, 0.26); transform: rotate(-1.5deg); transform-origin: center; transition: background 320ms ease, box-shadow 320ms ease, transform 320ms ease; }
+.hero-you-stroke--primary { bottom: -0.05em; left: -1%; width: 104%; height: 0.105em; min-height: 3px; }
+.hero-you-stroke--secondary { bottom: -0.21em; left: 10%; width: 83%; height: 0.07em; min-height: 2px; opacity: 0.92; transform: rotate(0.8deg); }
+.hero-premium-word--you:hover .hero-you-stroke { background: #d72f4c; box-shadow: 0 1px 8px rgba(215, 47, 76, 0.48); }
+.hero-premium-word--you:hover .hero-you-stroke--primary { transform: rotate(-1.5deg) scaleX(1.025); }
+@media (prefers-reduced-motion: reduce) { .hero-premium-word, .hero-you-stroke { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-premium-word { transition: none; } }

@@ -73,8 +73,8 @@ export const HorizontalAccordion: React.FC<HorizontalAccordionProps> = ({
                   sizes="(max-width: 1023px) 100vw, 35vw"
                   alt={item.titulo}
                   className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105 will-change-transform transform-gpu"
-                  loading="eager"
-                  decoding="sync"
+                  loading="lazy"
+                  decoding="async"
                   fetchPriority={index === 0 ? 'high' : 'auto'}
                 />
                 {/* Fixed base dark overlay */}

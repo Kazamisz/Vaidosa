@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { COMPANY } from '../data/company';
@@ -11,21 +11,18 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      active: true,
-    });
+    cardRef.current.style.setProperty('--hero-pointer-x', `${e.clientX - rect.left}px`);
+    cardRef.current.style.setProperty('--hero-pointer-y', `${e.clientY - rect.top}px`);
+    cardRef.current.style.setProperty('--hero-pointer-opacity', '1');
   };
 
   const handleMouseLeave = () => {
-    setMousePos(prev => ({ ...prev, active: false }));
+    cardRef.current?.style.setProperty('--hero-pointer-opacity', '0');
   };
 
   const handleScrollToNext = () => {
@@ -72,7 +69,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="group relative w-fit max-w-[calc(100vw-1.5rem)] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto overflow-hidden rounded-[18px] sm:rounded-[26px] md:rounded-[32px] border border-white/15 bg-stone-950/40 backdrop-blur-md px-3.5 py-3.5 sm:px-8 sm:py-6 md:px-12 md:py-7 lg:px-14 lg:py-8 mb-4 sm:mb-6 lg:mb-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] transition-all duration-500 hover:border-white/25 hover:bg-stone-950/50 inline-flex flex-col items-center justify-center text-center"
+          className="hero-glass-card group relative w-fit max-w-[calc(100vw-1.5rem)] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto overflow-hidden rounded-[18px] sm:rounded-[26px] md:rounded-[32px] border border-white/15 bg-stone-950/40 backdrop-blur-md px-3.5 py-3.5 sm:px-8 sm:py-6 md:px-12 md:py-7 lg:px-14 lg:py-8 mb-4 sm:mb-6 lg:mb-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] transition-all duration-500 hover:border-white/25 hover:bg-stone-950/50 inline-flex flex-col items-center justify-center text-center"
         >
           {/* Subtle light streak top border */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-rose-200/30 to-transparent" />
@@ -81,10 +78,8 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
           <div
             className="pointer-events-none absolute inset-0 transition-opacity duration-500 ease-out"
             style={{
-              background: mousePos.active
-                ? `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, rgba(244, 114, 182, 0.15), rgba(121, 9, 49, 0.08), transparent 75%)`
-                : `radial-gradient(300px circle at 50% 50%, rgba(244, 114, 182, 0.06), transparent 70%)`,
-              opacity: mousePos.active ? 1 : 0.4,
+              background: 'radial-gradient(380px circle at var(--hero-pointer-x, 50%) var(--hero-pointer-y, 50%), rgba(244,114,182,0.15), rgba(121,9,49,0.08), transparent 75%)',
+              opacity: 'var(--hero-pointer-opacity, 0)',
             }}
           />
 
@@ -104,7 +99,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 1: Elegância sem Regras */}
             <span className="block whitespace-nowrap">
               {/* Elegância */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--gold relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Elegância
                 </span>
@@ -118,7 +113,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
               </span>{' '}
 
               {/* Regras */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--red relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Regras
                 </span>
@@ -128,7 +123,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 2: Tamanhos e Proporções */}
             <span className="block whitespace-nowrap my-0.5 sm:my-1 md:my-1.5">
               {/* Tamanhos */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--deep-rose relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Tamanhos
                 </span>
@@ -142,7 +137,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
               </span>{' '}
 
               {/* Proporções */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--violet relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Proporções
                 </span>
@@ -152,7 +147,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
             {/* Linha 3: Desenhadas para Você. */}
             <span className="block whitespace-nowrap">
               {/* Desenhadas */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--purple relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Desenhadas
                 </span>
@@ -166,10 +161,12 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog }) => {
               </span>{' '}
 
               {/* Você. */}
-              <span className="group/word relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 transition-[text-shadow] duration-300 ease-out hover:[text-shadow:0_0_20px_rgba(244,114,182,0.65)] cursor-default">
+              <span className="hero-premium-word hero-premium-word--red hero-premium-word--you relative inline-block mx-[2px] sm:mx-1 my-0 sm:my-0.5 cursor-default">
                 <span className="relative z-10 font-bold">
                   Você.
                 </span>
+                <span aria-hidden="true" className="hero-you-stroke hero-you-stroke--primary" />
+                <span aria-hidden="true" className="hero-you-stroke hero-you-stroke--secondary" />
               </span>
             </span>
           </h1>

@@ -2,232 +2,46 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { COMPANY } from '../data/company';
 
-interface InitialEntranceProps {
-  onComplete: () => void;
-}
+interface InitialEntranceProps { onComplete: () => void; }
 
 export const InitialEntrance: React.FC<InitialEntranceProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-  const [statusText, setStatusText] = useState('Iniciando alta curadoria...');
+  const statusText = 'Preparando sua experiência';
   const isCompleteRef = useRef(false);
-
-  // List of all Formas (Bento) images and responsive variants to prefetch & GPU-decode
-  const formasImagePaths = [
-    '/images/instagram/DRBTkLVDNXO/01.webp',
-    '/images/instagram/DRBTkLVDNXO/01-480.webp',
-    '/images/instagram/DRBTkLVDNXO/01-960.webp',
-    '/images/instagram/DcWY2suRWQD/01.webp',
-    '/images/instagram/DcWY2suRWQD/01-480.webp',
-    '/images/instagram/DcWY2suRWQD/01-960.webp',
-    '/images/instagram/DRBToI9DMno/01.webp',
-    '/images/instagram/DRBToI9DMno/01-480.webp',
-    '/images/instagram/DRBToI9DMno/01-960.webp',
-    '/images/instagram/Db8jnVWPvoU/01.webp',
-    '/images/instagram/Db8jnVWPvoU/01-480.webp',
-    '/images/instagram/Db8jnVWPvoU/01-960.webp',
-    '/images/instagram/DUqCaGTgKWI/01.webp',
-    '/images/instagram/DUqCaGTgKWI/01-480.webp',
-    '/images/instagram/DUqCaGTgKWI/01-960.webp',
-    '/images/instagram/DYGalCJjEim/01.webp',
-    '/images/instagram/DYGalCJjEim/01-480.webp',
-    '/images/instagram/DYGalCJjEim/01-960.webp',
-    '/images/instagram/DSnKZh7AH7Z/01.webp',
-    '/images/instagram/DSnKZh7AH7Z/01-480.webp',
-    '/images/instagram/DSnKZh7AH7Z/01-960.webp',
-  ];
-
-  // Expose verification diagnostic tool to window for real test validation
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const verifyDiagnostics = () => {
-        // 1. Bento Section Check
-        const bentoSection = document.getElementById('bento');
-        const bentoImages = Array.from(document.querySelectorAll<HTMLImageElement>('#bento img'));
-        const bentoCanvas = document.querySelector<HTMLCanvasElement>('#bento canvas');
-        const bentoCards = document.querySelectorAll('#bento [data-cursor="view"]');
-
-        const bentoDetails = bentoImages.map((img) => ({
-          src: img.currentSrc || img.src,
-          complete: img.complete,
-          naturalWidth: img.naturalWidth,
-          naturalHeight: img.naturalHeight,
-        }));
-
-        const bentoImagesReady = bentoImages.length >= 7 && bentoDetails.every((d) => d.complete && d.naturalWidth > 0);
-        const bentoCanvasReady = Boolean(bentoCanvas && bentoCanvas.width > 0 && bentoCanvas.height > 0);
-        const bentoSectionReady = Boolean(bentoSection && bentoCards.length >= 7);
-
-        // 2. Exploração Tátil (Accordion & GhostFibers) Check
-        const accordionSection = document.getElementById('exploracao-tatil');
-        const accordionImages = Array.from(document.querySelectorAll<HTMLImageElement>('#exploracao-tatil img'));
-        const ghostFibersCanvas = document.querySelector<HTMLCanvasElement>('.section-fusion canvas');
-        const accordionCards = document.querySelectorAll('#exploracao-tatil [data-cursor="view"]');
-
-        const accordionDetails = accordionImages.map((img) => ({
-          src: img.currentSrc || img.src,
-          complete: img.complete,
-          naturalWidth: img.naturalWidth,
-          naturalHeight: img.naturalHeight,
-        }));
-
-        const accordionImagesReady = accordionImages.length >= 4 && accordionDetails.every((d) => d.complete && d.naturalWidth > 0);
-        const ghostFibersReady = Boolean(ghostFibersCanvas && ghostFibersCanvas.width > 0 && ghostFibersCanvas.height > 0);
-        const accordionSectionReady = Boolean(accordionSection && accordionCards.length >= 4);
-
-        const allReady = bentoImagesReady && bentoCanvasReady && bentoSectionReady && accordionImagesReady && ghostFibersReady && accordionSectionReady;
-
-        return {
-          success: allReady,
-          formas: {
-            ready: bentoImagesReady && bentoCanvasReady && bentoSectionReady,
-            sectionExists: Boolean(bentoSection),
-            totalCards: bentoCards.length,
-            imagesCount: bentoImages.length,
-            imagesLoaded: bentoDetails.filter((d) => d.complete && d.naturalWidth > 0).length,
-            webglCanvas: Boolean(bentoCanvas),
-          },
-          exploracaoTatil: {
-            ready: accordionImagesReady && ghostFibersReady && accordionSectionReady,
-            sectionExists: Boolean(accordionSection),
-            totalCards: accordionCards.length,
-            imagesCount: accordionImages.length,
-            imagesLoaded: accordionDetails.filter((d) => d.complete && d.naturalWidth > 0).length,
-            ghostFibersCanvas: Boolean(ghostFibersCanvas),
-          },
-        };
-      };
-
-      (window as any).__VERIFY_FORMAS_SECTION_LOADED__ = verifyDiagnostics;
-      (window as any).__VERIFY_ALL_PRELOADED_SECTIONS__ = verifyDiagnostics;
-    }
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-
-    // Quick escape if user prefers reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIsVisible(false);
-      onComplete();
-      return;
-    }
-
-    // Phase 1: Real asset decoding & GPU pipeline warm-up
-    const loadPromise = async () => {
-      // 1. Decode all Formas & Exploração Tátil image assets into GPU memory
-      const decodePromises = formasImagePaths.map((src) => {
-        return new Promise<void>((resolve) => {
-          const img = new Image();
-          img.src = src;
-          if (typeof img.decode === 'function') {
-            img.decode().then(() => resolve()).catch(() => resolve());
-          } else {
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-          }
-        });
-      });
-
-      await Promise.allSettled(decodePromises);
-
-      // 2. Poll for DOM #bento and #exploracao-tatil sections & canvas readiness
-      const maxAttempts = 35;
-      for (let i = 0; i < maxAttempts; i++) {
-        const bento = document.getElementById('bento');
-        const bentoImgs = Array.from(document.querySelectorAll<HTMLImageElement>('#bento img'));
-        const bentoCanvas = document.querySelector<HTMLCanvasElement>('#bento canvas');
-
-        const accordion = document.getElementById('exploracao-tatil');
-        const accordionImgs = Array.from(document.querySelectorAll<HTMLImageElement>('#exploracao-tatil img'));
-        const ghostFibersCanvas = document.querySelector<HTMLCanvasElement>('.section-fusion canvas');
-
-        const bentoReady = Boolean(bento) && bentoImgs.length >= 7 && bentoImgs.every((img) => img.complete && img.naturalWidth > 0) && Boolean(bentoCanvas && bentoCanvas.width > 0);
-        const accordionReady = Boolean(accordion) && accordionImgs.length >= 4 && accordionImgs.every((img) => img.complete && img.naturalWidth > 0) && Boolean(ghostFibersCanvas && ghostFibersCanvas.width > 0);
-
-        if (bentoReady && accordionReady) {
-          break;
-        }
-        await new Promise((r) => setTimeout(r, 50));
-      }
-
-      // 3. Ensure fonts are ready
-      if ('fonts' in document) {
-        try {
-          await document.fonts.ready;
-        } catch {}
-      }
-    };
-
-    const sectionReadyPromise = loadPromise();
-
-    // Phase 2: Luxury paced progress bar (~2200ms) ensuring zero visual pop-in or stutter
-    const startTime = performance.now();
-    const minDuration = 2200; // Optimal duration for simultaneous GPU, texture, and WebGL shader warm-up
-    let animationFrameId: number;
-
-    const animateProgress = async (currentTime: number) => {
-      if (!active) return;
-
-      const elapsed = currentTime - startTime;
-      const progressRatio = Math.min(elapsed / minDuration, 1);
-
-      // Natural cubic-bezier deceleration curve
-      const eased = 1 - Math.pow(1 - progressRatio, 2.8);
-      const targetPercent = Math.min(Math.round(eased * 100), 96);
-
-      setProgress(targetPercent);
-
-      // Update editorial status text according to progress milestones
-      if (targetPercent < 25) {
-        setStatusText('Iniciando atelier...');
-      } else if (targetPercent < 55) {
-        setStatusText('Renderizando arquitetura de formas...');
-      } else if (targetPercent < 80) {
-        setStatusText('Sincronizando exploração tátil...');
-      } else if (targetPercent < 95) {
-        setStatusText('Decodificando catálogo e texturas...');
-      } else {
-        setStatusText('Finalizando sincronização visual...');
-      }
-
-      if (progressRatio < 1) {
-        animationFrameId = requestAnimationFrame(animateProgress);
-      } else {
-        // Wait for actual section preparation to be 100% complete
-        await sectionReadyPromise;
-        if (!active) return;
-
-        setProgress(100);
-        setStatusText('Coleção preparada');
-
-        // Elegant hold before cinematic reveal
-        setTimeout(() => {
-          if (!active) return;
-          setIsVisible(false);
-          setTimeout(() => {
-            if (!active || isCompleteRef.current) return;
-            isCompleteRef.current = true;
-            onComplete();
-          }, 500);
-        }, 220);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animateProgress);
-
-    return () => {
-      active = false;
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [onComplete]);
+  const completeRef = useRef(onComplete);
+  completeRef.current = onComplete;
 
   const handleDismiss = () => {
     if (isCompleteRef.current) return;
     isCompleteRef.current = true;
+    setProgress(100);
     setIsVisible(false);
-    onComplete();
+    completeRef.current();
   };
+
+  useEffect(() => {
+    let active = true;
+    const finish = () => { if (active) handleDismiss(); };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finish();
+      return;
+    }
+    // Decode only the responsive hero selected by the browser; never wait for offscreen sections.
+    const hero = document.querySelector<HTMLImageElement>('#inicio img');
+    const timeout = window.setTimeout(finish, 900);
+    const progressTimer = window.setTimeout(() => { if (active) setProgress(65); }, 100);
+    if (hero) {
+      hero.decode().then(finish, finish);
+    } else {
+      finish();
+    }
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+      window.clearTimeout(progressTimer);
+    };
+  }, []);
 
   return (
     <AnimatePresence>
